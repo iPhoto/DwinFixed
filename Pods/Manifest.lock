@@ -1,0 +1,37 @@
+PODS:
+  - AGImagePickerController (2.0.1)
+  - ASIHTTPRequest (1.8.1):
+    - ASIHTTPRequest/ASIWebPageRequest
+    - ASIHTTPRequest/CloudFiles
+    - ASIHTTPRequest/S3
+    - Reachability
+  - ASIHTTPRequest/ASIWebPageRequest (1.8.1):
+    - Reachability
+  - ASIHTTPRequest/CloudFiles (1.8.1):
+    - Reachability
+  - ASIHTTPRequest/S3 (1.8.1):
+    - Reachability
+  - Google-Maps-iOS-SDK (1.5.0)
+  - GPUImage (0.1.0)
+  - PICircularProgressView (0.1.1)
+  - Reachability (3.1.1)
+  - ViewDeck (2.3.1)
+
+DEPENDENCIES:
+  - AGImagePickerController
+  - ASIHTTPRequest
+  - Google-Maps-iOS-SDK
+  - GPUImage
+  - PICircularProgressView
+  - ViewDeck
+
+SPEC CHECKSUMS:
+  AGImagePickerController: 22a1e17592a7d2b390195e032c18979f9718d0cf
+  ASIHTTPRequest: a411b8d0f006ed8fc24248be6a0c4ad2abc9b101
+  Google-Maps-iOS-SDK: a7ae159dce2959927aeec2ebae1765f3b64e20b4
+  GPUImage: 5b902c1df2afe0ac30a8e3e7379f9c0bb25c7c85
+  PICircularProgressView: 24961581dc1f53ce6864c8c415e315bb7eaa9770
+  Reachability: 2be6bc2fd2bd31d97f5db33e75e4b29c79e95883
+  ViewDeck: 2cdc67c4b41a10cafc7556b982f028409e33604d
+
+COCOAPODS: 0.23.0

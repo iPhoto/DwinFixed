@@ -7,17 +7,59 @@
 //
 
 #import "AppDelegate.h"
-
+#import "FriendListViewController.h"
+#import "TestViewController.h"
+#import "ZXMacro.h"
+#import "TextEditViewController.h"
+#import "GetStaticImage.h"
+#import "LeftSideViewController.h"
+#import "IIViewDeckController.h"
+#import "RecordingViewController.h"
+#import "TheFirstViewController.h"
+#import "TestViewController.h"
+#import "TVShowViewController.h"
+#import "MapViewController.h"
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[MapViewController alloc] init]];
+  // self.window.rootViewController = [[TestViewController alloc] init] ;
+    //self.window.rootViewController = nav;
+     IIViewDeckController* deckController = [self generateControllerStack];
+  self.window.rootViewController = deckController;
+    [self setNavigationBar];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
 }
+
+#pragma mark -setNavigationBar
+- (void)setNavigationBar
+{
+    UIImageView *imageview = [[UIImageView alloc] initWithFrame:kScreen_Frame];
+    imageview.image = [UIImage imageNamed:@"friendlistbg1"];
+    GetStaticImage *getview = [[GetStaticImage alloc] initWithFatherView:imageview withRect:CGRectMake(0, 0, 320, 44) withBlurRadius:0.3];
+    UIImage *imageNew = getview.imageSteal;
+    [[UINavigationBar appearance] setBackgroundImage:imageNew forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: [UIColor whiteColor],
+                                     UITextAttributeFont: [UIFont fontWithName:HELVETICANUEU size:25]}];
+}
+
+- (IIViewDeckController*)generateControllerStack {
+    LeftSideViewController* leftController = [[LeftSideViewController alloc] init];
+        
+    UIViewController *centerController = [[FriendListViewController alloc] init];
+    centerController = [[UINavigationController alloc] initWithRootViewController:centerController];
+    IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:centerController leftViewController:leftController];
+    //deckController.rightSize = 100;
+    deckController.leftSize = 160;
+    [deckController disablePanOverViewsOfClass:NSClassFromString(@"_UITableViewHeaderFooterContentView")];
+    return deckController;
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

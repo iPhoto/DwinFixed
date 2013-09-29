@@ -1,0 +1,7 @@
+platform:ios,'6.1'
+pod 'Google-Maps-iOS-SDK'
+pod 'GPUImage'
+pod 'ASIHTTPRequest'
+pod 'ViewDeck'
+pod 'PICircularProgressView'
+pod 'AGImagePickerController'

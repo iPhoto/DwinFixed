@@ -9,6 +9,10 @@
 #endif
 
 #ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "Global.h"
+#import "Utils.h"
+#import "HttpHelper.h"
+#import "ZXMacro.h"
 #endif
