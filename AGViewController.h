@@ -19,4 +19,5 @@
 
 @property (nonatomic, strong) NSMutableArray *selectedPhotos;
 
+
 @end

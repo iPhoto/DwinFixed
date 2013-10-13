@@ -12,6 +12,8 @@
 @property(nonatomic)float ft;
 @property(nonatomic)float ft1;
 @property(nonatomic)int flag;
+@property(nonatomic,strong)NSArray *arr;
+@property(nonatomic,strong)NSArray *fivepicArr,*fourpicArr,*threepicArr;
 +(Singel *)danli;
 
 @end

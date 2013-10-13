@@ -38,6 +38,7 @@
      ];
     lab.alpha=0;
     [UIView commitAnimations];
+    NSLog(@"alert");
     
     
 }

@@ -8,7 +8,7 @@
 
 #import "AGViewController.h"
 
-#import "AGIPCToolbarItem.h"
+
 
 @interface AGViewController ()
 {
@@ -31,24 +31,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self)
     {
-       
-    }
-    
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    {
         self.selectedPhotos = [NSMutableArray array];
         
         __block AGViewController *blockSelf = self;
@@ -61,38 +43,77 @@
                 [blockSelf.selectedPhotos removeAllObjects];
                 NSLog(@"User has cancelled.");
                 
-                [blockSelf dismissModalViewControllerAnimated:YES];
+                [blockSelf dismissViewControllerAnimated:YES completion:nil];
             } else {
                 
                 // We need to wait for the view controller to appear first.
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [blockSelf dismissModalViewControllerAnimated:YES];
+                    [blockSelf dismissViewControllerAnimated:YES completion:nil];
                 });
             }
-            
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-            
+
         };
         ipc.didFinishBlock = ^(NSArray *info) {
             [blockSelf.selectedPhotos setArray:info];
             
-            NSLog(@"Info: %@", info);
-            [blockSelf dismissModalViewControllerAnimated:YES];
+            
+            
+            
+            NSLog(@"1234567890-Info: %@", blockSelf.selectedPhotos);
+            
+            
+            
+            
+            NSURL *uri=[NSURL URLWithString:@"//asset/asset.JPG?id=69FF6F24-E989-46AC-AE95-0893B8F0D258&ext=JPG"];
+            
+            
+            NSData * data = [NSData dataWithContentsOfURL:uri];
+            [UIImage imageWithData:data];
+   
+            [blockSelf dismissViewControllerAnimated:YES completion:nil];
             
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            
+            
+            
         };
     }
-    [self openAction:nil];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    return self;
+}
+
+
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    
+    
+    UIButton*btn=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [btn addTarget:self action:@selector(openAction:) forControlEvents:UIControlEventTouchUpInside];
+    btn.frame=CGRectMake(100, 100, 100, 100);
+    [self.view addSubview:btn];
+    
+    
+    
+    
+
 }
 
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -108,36 +129,20 @@
 #pragma mark - Public methods
 
 - (void)openAction:(id)sender
-{    
+{
     // Show saved photos on top
     ipc.shouldShowSavedPhotosOnTop = NO;
     ipc.shouldChangeStatusBarStyle = YES;
     ipc.selection = self.selectedPhotos;
-//    ipc.maximumNumberOfPhotosToBeSelected = 1;
-    
-    // Custom toolbar items
-    AGIPCToolbarItem *selectAll = [[AGIPCToolbarItem alloc] initWithBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"+ Select All" style:UIBarButtonItemStyleBordered target:nil action:nil] andSelectionBlock:^BOOL(NSUInteger index, ALAsset *asset) {
-        return YES;
-    }];
-    AGIPCToolbarItem *flexible = [[AGIPCToolbarItem alloc] initWithBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil] andSelectionBlock:nil]; 
-    AGIPCToolbarItem *selectOdd = [[AGIPCToolbarItem alloc] initWithBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"+ Select Odd" style:UIBarButtonItemStyleBordered target:nil action:nil] andSelectionBlock:^BOOL(NSUInteger index, ALAsset *asset) {
-        return !(index % 2);
-    }];
-    AGIPCToolbarItem *deselectAll = [[AGIPCToolbarItem alloc] initWithBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"- Deselect All" style:UIBarButtonItemStyleBordered target:nil action:nil] andSelectionBlock:^BOOL(NSUInteger index, ALAsset *asset) {
-        return NO;
-    }];  
-    ipc.toolbarItemsForManagingTheSelection = @[selectAll, flexible, selectOdd, flexible, deselectAll];
-//    imagePickerController.toolbarItemsForManagingTheSelection = [NSArray array];
-    
-//    imagePickerController.maximumNumberOfPhotos = 3;
-    [self presentModalViewController:ipc animated:YES];
+    //    ipc.maximumNumberOfPhotosToBeSelected = 1;
+       [self presentViewController:ipc animated:YES completion:nil];
 }
 
 #pragma mark - AGImagePickerControllerDelegate methods
 
 - (NSUInteger)agImagePickerController:(AGImagePickerController *)picker
-   numberOfItemsPerRowForDevice:(AGDeviceType)deviceType
-        andInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+         numberOfItemsPerRowForDevice:(AGDeviceType)deviceType
+              andInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     if (deviceType == AGDeviceTypeiPad)
     {
@@ -153,11 +158,6 @@
     }
 }
 
-- (void)agImagePickerController:(AGImagePickerController *)picker didFinishPickingMediaWithInfo:(NSArray *)info
-{
-    NSLog(@"%@",info);
-}
-
 - (BOOL)agImagePickerController:(AGImagePickerController *)picker shouldDisplaySelectionInformationInSelectionMode:(AGImagePickerControllerSelectionMode)selectionMode
 {
     return (selectionMode == AGImagePickerControllerSelectionModeSingle ? NO : YES);
@@ -165,7 +165,7 @@
 
 - (BOOL)agImagePickerController:(AGImagePickerController *)picker shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerControllerSelectionMode)selectionMode
 {
-    return (selectionMode == AGImagePickerControllerSelectionModeSingle ? NO : YES);    
+    return (selectionMode == AGImagePickerControllerSelectionModeSingle ? NO : YES);
 }
 
 - (AGImagePickerControllerSelectionBehaviorType)selectionBehaviorInSingleSelectionModeForAGImagePickerController:(AGImagePickerController *)picker

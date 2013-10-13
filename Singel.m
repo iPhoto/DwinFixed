@@ -12,6 +12,7 @@
 static Singel *zl_login;
 +(Singel *)danli
 {
+    
     @synchronized(self)
     {
         if (zl_login==nil)
@@ -20,5 +21,11 @@ static Singel *zl_login;
         }
     }
     return zl_login;
+
+}
+-(void)pic
+{
+
+
 }
 @end

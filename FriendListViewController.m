@@ -14,12 +14,28 @@
 #import "IIViewDeckController.h"
 #import "LoginViewController.h"
 #import "TheFirstViewController.h"
+#import "DetailsView.h"
+#import "PinAnnotation.h"
+#import "PinAnnotationView.h"
+#import "DetailsAnnotation.h"
+#import "DetailsAnnotationView.h"
+#import "MKMapView+MapViewUtil.h"
 #define kTabAlreadyDownUserViewY 0
 #define kTabAlreadyUpUserViewY -80
 #define kScrollAlreadyUp 50
 #define kScrollAlreadyDown 130
-@interface FriendListViewController ()
 
+
+#define  spaceFNum  0.003
+#define  oriZoomLevel 12.
+#define oriSpan   MKCoordinateSpanMake(0.00494, 0.00538)
+#define oriCenterCoordinate  CLLocationCoordinate2DMake(30.658273, 104.067864)
+@interface FriendListViewController ()
+{
+    PinAnnotation       *_pinAnnotation;
+    DetailsAnnotation   *_detailsAnnotation;
+    NSMutableArray      *_detailsAnnoArray;
+}
 @end
 
 @implementation FriendListViewController
@@ -34,12 +50,46 @@
 }
 
 # pragma mark -NavgationCotroller Delegate
-
+-(void)initData
+{
+    self.dataArray = [NSMutableArray array];//弹出气泡的数据Array
+    // [self.dataArray addObject:@"12345"];
+    //child item
+    NSMutableArray *childAry = [NSMutableArray array];
+    for (int i=0; i<8; i++) {
+        MapItemInfoVO *child = [[MapItemInfoVO alloc]init];
+        child.strId = [NSString stringWithFormat:@"%d",i];
+        child.strTitle = [NSString stringWithFormat:@"child%d",i];
+        [childAry addObject:child];
+    }
+    
+    //item
+    for (int j=0; j<8; j++) {
+        MapItemInfoVO *item = [[MapItemInfoVO alloc]init];
+        item.strId = [NSString stringWithFormat:@"%d",j];
+        item.strTitle = [NSString stringWithFormat:@"Item%d",j];
+        item.strDetails = @"hi";
+        NSMutableArray *ary = [NSMutableArray array];
+        
+        int childCount = 3;
+        for (int n=0; n<childCount; n++) {
+            if (n<[childAry count]) {
+                [ary addObject:[childAry objectAtIndex:n]];
+            }
+        }
+        item.aryChild = ary; //小泡泡数据Array，决定了小泡泡个数及显示内容等
+        [self.dataArray addObject:item];
+    }
+    
+    
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [self initData];
+    _detailsAnnoArray = [[NSMutableArray alloc]init];
+    newLocCoordinate = oriCenterCoordinate;
     [self setupView];
   
     NSLog(@"screen %lf",kScreen_Height);
@@ -149,24 +199,25 @@
     userTabBar = [[UIView alloc] initWithFrame:CGRectMake(0, 82, 320, 50)];
     userTabBar.backgroundColor = [UIColor clearColor];
     [userInfoView addSubview:userTabBar];
+    // 白色方块
+    whiteBlock = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 100, 30)];
+    whiteBlock.image = [UIImage imageNamed:@"friendlist_whiteblock"];
+    [userTabBar addSubview:whiteBlock];
     // 用户选项
     btn_comment = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_comment.frame = CGRectMake(10, 9, 100, 30);
     //[btn_comment setTitle:@"Moment" forState:UIControlStateNormal];
     btn_comment.tag=1;
     [btn_comment addTarget:self action:@selector(moveWhiteBlock:) forControlEvents:UIControlEventTouchUpInside];
-    [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_moment"] forState:UIControlStateNormal];
+    [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_momentselected"] forState:UIControlStateNormal];
     [userTabBar addSubview:btn_comment];
-    // 白色方块
-    whiteBlock = [[UIImageView alloc] initWithFrame:CGRectMake(100, 9, 100, 30)];
-    whiteBlock.image = [UIImage imageNamed:@"friendlist_whiteblock"];
-    [userTabBar addSubview:whiteBlock];
+    
     //
     btn_activity = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_activity.frame = CGRectMake(110, 9, 100, 30);
     btn_activity.tag=2;
     [btn_activity addTarget:self action:@selector(moveWhiteBlock:) forControlEvents:UIControlEventTouchUpInside];
-    [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activityselected"] forState:UIControlStateNormal];
+    [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activity"] forState:UIControlStateNormal];
     [userTabBar addSubview:btn_activity];
     
     btn_map = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -204,15 +255,16 @@
             if (_mTableView ==nil) {
                 [self setTableView];
                 _mTableView.frame = CGRectMake(0, _mTableView.frame.origin.y,kScreen_Width ,kScreen_Height) ;
-                [_mapInfoView removeFromSuperview];
+                [_mapView removeFromSuperview];
                
             }else
             {
                 _mTableView.frame = CGRectMake(0, _mTableView.frame.origin.y, kScreen_Width, kScreen_Height);
-                [_mapInfoView removeFromSuperview];
+                [_mapView removeFromSuperview];
                 [self.view addSubview:_mTableView];
             }
         }
+            [controlView removeFromSuperview];
             break;
         case 2:
         {
@@ -222,6 +274,7 @@
             [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_moment"] forState:UIControlStateNormal];
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activityselected"] forState:UIControlStateNormal];
             [btn_map setBackgroundImage:[UIImage imageNamed:@"friendlist_map"] forState:UIControlStateNormal];
+            [controlView removeFromSuperview];
         }
             break;
         case 3:
@@ -232,19 +285,21 @@
             [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_moment"] forState:UIControlStateNormal];
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activity"] forState:UIControlStateNormal];
             [btn_map setBackgroundImage:[UIImage imageNamed:@"friendlist_mapselected"] forState:UIControlStateNormal];
-            if (_mapInfoView ==nil) {
-                _mapInfoView = [[MapDetailsAnimation alloc] initWithFrame:CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView))];
-                _mapInfoView.locationManager.delegate = self;
-                [_mapInfoView.locationManager startUpdatingLocation];
+            if (_mapView ==nil) {
+                _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView))];
+                _mapView.showsUserLocation = YES;
+                _mapView.delegate = self;
+               
                 [_mTableView removeFromSuperview];
-                [self.view addSubview:_mapInfoView];
+                [self.view addSubview:_mapView];
             }else
             {
-                _mapInfoView.frame = CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView));
+                _mapView.frame = CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView));
                 [_mTableView removeFromSuperview];
-                [self.view addSubview:_mapInfoView];
+                [self.view addSubview:_mapView];
             }
         }
+            [controlView removeFromSuperview];
             break;
         default:
             break;
@@ -254,7 +309,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = (CLLocation *)[locations lastObject];
-    _mapInfoView.mapView.centerCoordinate = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
+    _mapView.centerCoordinate = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
 }
 
 - (void)handleSwipeFrom:(UISwipeGestureRecognizer *)sender
@@ -453,6 +508,7 @@
         {
             [UIView animateWithDuration:0.5 animations:^{
                 controlView.frame = CGRectMake(47, 130, 0, 0);
+                [controlView removeFromSuperview];
             }];
             break;
         }
@@ -461,15 +517,357 @@
     }
 }
 
+#pragma mark - Methods
+-(void)segmentValueChanged
+{
+    if (_pinAnnotation && [_detailsAnnoArray count]>0) {
+        
+        if ([_detailsAnnoArray count]>0) {
+            
+            DetailsAnnotation *last = [_detailsAnnoArray lastObject];
+            
+            PinAnnotationView *pV = (PinAnnotationView *)[_mapView viewForAnnotation:_pinAnnotation];
+            DetailsAnnotationView *dV = (DetailsAnnotationView *)[_mapView viewForAnnotation:last];
+            [dV.superview bringSubviewToFront:dV];
+            [pV.superview bringSubviewToFront:pV];
+            
+            
+            DetailsAnnotationView *annoView = (DetailsAnnotationView *)[_mapView viewForAnnotation:last];
+            [annoView.cell disappearItems:^{
+                [_mapView removeAnnotation:last];
+                [_detailsAnnoArray removeLastObject];
+                
+                if ([_detailsAnnoArray count]>0) {
+                    _detailsAnnotation = [_detailsAnnoArray objectAtIndex:0];
+                }
+                else
+                {
+                    _detailsAnnotation = nil;
+                }
+                
+                [self mapView:self.mapView didSelectAnnotationView:[self.mapView viewForAnnotation:_pinAnnotation]];
+                
+            }];
+            
+        }
+        
+        
+    }
+    
+    
+}
+-(void)clickItemButton:(ItemView *)btn
+{
+    
+    DLog(@"Click item button _ %d--------------------------------------------",btn.tag);
+    
+}
+
+-(void)removeAllAnnotations
+{
+    id userAnnotation = _mapView.userLocation;
+    
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:_mapView.annotations];
+    [annotations removeObject:userAnnotation];
+    
+    [_mapView removeAnnotations:annotations];
+}
+
+//随意放几个测试数据
+-(void)placeTempPins
+{
+    if (_pinAnnotation) {
+        [_mapView deselectAnnotation:_pinAnnotation animated:NO];
+    }
+    [self removeAllAnnotations];
+    
+    PinAnnotation *pinAnno = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude andLongitude:newLocCoordinate.longitude];
+    
+    [_mapView addAnnotation:pinAnno];
+    PinAnnotation *pinAnno1 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.1 andLongitude:newLocCoordinate.longitude];
+    [_mapView addAnnotation:pinAnno1];
+    PinAnnotation *pinAnno2 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.2 andLongitude:newLocCoordinate.longitude];
+    [_mapView addAnnotation:pinAnno2];
+    PinAnnotation *pinAnno3 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.3 andLongitude:newLocCoordinate.longitude];
+    [_mapView addAnnotation:pinAnno3];
+    PinAnnotation *pinAnno4 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.4 andLongitude:newLocCoordinate.longitude];
+    [_mapView addAnnotation:pinAnno4];
+    PinAnnotation *pinAnno5 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.5 andLongitude:newLocCoordinate.longitude];
+    [_mapView addAnnotation:pinAnno5];
+   
+    
+}
+-(void)setMapRegin:(CLLocationCoordinate2D)coordinate
+{
+    newLocCoordinate = coordinate;
+    double level = [_mapView getZoomLevel];
+    if (level<oriZoomLevel) {
+        level = oriZoomLevel;
+    }
+    
+    [_mapView setCenterCoordinate:newLocCoordinate zoomLevel:level animated:YES];
+    
+    [self placeTempPins];
+    
+}
+
+#pragma mark LOCATION
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    newLocCoordinate = userLocation.coordinate;
+    
+    [self setMapRegin:newLocCoordinate];
+    
+    self.mapView.showsUserLocation = NO;
+	
+}
+
+- (void)mapView:(MKMapView *)mapView didFailToLocateUserWithError:(NSError *)error
+{
+	if (error != nil)
+		DLog(@"locate failed: %@", [error localizedDescription]);
+	else {
+		DLog(@"locate failed");
+	}
+	
+}
+
+- (void)mapViewWillStartLocatingUser:(MKMapView *)mapView
+{
+	DLog(@"start locate");
+}
+
+#pragma mark  Range
+-(void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
+{
+    
+    if ([_detailsAnnoArray count]>0) {
+        DetailsAnnotation *first = [_detailsAnnoArray objectAtIndex:0];
+        PinAnnotationView *pV = (PinAnnotationView *)[mapView viewForAnnotation:_pinAnnotation];
+        DetailsAnnotationView *dV = (DetailsAnnotationView *)[mapView viewForAnnotation:first];
+        [dV.superview bringSubviewToFront:dV];
+        [pV.superview bringSubviewToFront:pV];
+    }
+    
+    DLog(@"【移动哦ing】");
+    
+    if (!_detailsAnnotation) {
+        return;
+    }
+    
+    CGPoint pinPoint = [mapView convertCoordinate:_detailsAnnotation.coordinate toPointToView:self.view];
+    BOOL bContains  = CGRectContainsPoint(self.view.bounds, pinPoint);
+    
+    if (bContains) {
+        DetailsAnnotationView *annoView = (DetailsAnnotationView *)[mapView viewForAnnotation:_detailsAnnotation];
+        CGPoint center = self.view.center;//[mapView convertCoordinate:_mapView.centerCoordinate toPointToView:self.view];
+        CGFloat angle = [Utils getAngleByPoint:pinPoint center:center];
+        [annoView.cell rotationViews:angle];
+    }
+    else{
+        [_mapView deselectAnnotation:_pinAnnotation animated:NO];
+    }
+    
+}
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
+{
+    
+    if ([_detailsAnnoArray count]>0) {
+        DetailsAnnotation *first = [_detailsAnnoArray objectAtIndex:0];
+        PinAnnotationView *pV = (PinAnnotationView *)[mapView viewForAnnotation:_pinAnnotation];
+        DetailsAnnotationView *dV = (DetailsAnnotationView *)[mapView viewForAnnotation:first];
+        [dV.superview bringSubviewToFront:dV];
+        [pV.superview bringSubviewToFront:pV];
+    }
+    
+    DLog(@"【将开始移动哦】");
+    if (_detailsAnnotation) {
+        
+        
+        CGPoint pinPoint = [mapView convertCoordinate:_detailsAnnotation.coordinate toPointToView:self.view];
+        BOOL bContains  = CGRectContainsPoint(self.view.bounds, pinPoint);
+        if (!bContains) {
+            [_mapView deselectAnnotation:_pinAnnotation animated:NO];
+        }
+        
+    }
+    
+    
+    
+}
+#pragma mark Annotation
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState
+{
+    DLog(@"【didChangeDragState】");
+}
+//选中MKAnnotationView
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
+    
+	if ([view.annotation isKindOfClass:[PinAnnotation class]]) {
+        
+        if (_detailsAnnotation.coordinate.latitude == view.annotation.coordinate.latitude&&
+            _detailsAnnotation.coordinate.longitude == view.annotation.coordinate.longitude) {
+            return;
+        }
+        
+        _pinAnnotation = (PinAnnotation *)view.annotation;
+        
+        DetailsAnnotation *detailsAnno = [[DetailsAnnotation alloc]
+                                          initWithLatitude:view.annotation.coordinate.latitude
+                                          andLongitude:view.annotation.coordinate.longitude];
+        
+        [mapView addAnnotation:detailsAnno];
+        
+        
+        
+        
+        [_detailsAnnoArray insertObject:detailsAnno atIndex:0];
+        
+        if (!_detailsAnnotation) {
+            _detailsAnnotation = detailsAnno;
+        }
+        
+    }
+    
+    
+}
+
+- (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
+    
+    if ([_detailsAnnoArray count]>0) {
+        
+        DetailsAnnotation *last = [_detailsAnnoArray lastObject];
+        
+        PinAnnotationView *pV = (PinAnnotationView *)[mapView viewForAnnotation:_pinAnnotation];
+        DetailsAnnotationView *dV = (DetailsAnnotationView *)[mapView viewForAnnotation:last];
+        [dV.superview bringSubviewToFront:dV];
+        [pV.superview bringSubviewToFront:pV];
+        
+        
+        DetailsAnnotationView *annoView = (DetailsAnnotationView *)[mapView viewForAnnotation:last];
+        [annoView.cell disappearItems:^{
+            [mapView removeAnnotation:last];
+            [_detailsAnnoArray removeLastObject];
+            
+            if ([_detailsAnnoArray count]>0) {
+                _detailsAnnotation = [_detailsAnnoArray objectAtIndex:0];
+            }
+            else
+            {
+                _detailsAnnotation = nil;
+            }
+            
+        }];
+        
+    }
+    NSLog(@"de selecte");
+    
+}
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+    //层次次序
+    PinAnnotationView *pV = (PinAnnotationView *)[mapView viewForAnnotation:_pinAnnotation];
+    DetailsAnnotationView *dV = (DetailsAnnotationView *)[mapView viewForAnnotation:_detailsAnnotation];
+    [dV.superview bringSubviewToFront:dV];
+    [pV.superview bringSubviewToFront:pV];
+}
+
+//设置MKAnnotation上的annotationView
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+	
+    if ([annotation isKindOfClass:[DetailsAnnotation class]]) {
+        
+        DetailsAnnotation *anno = (DetailsAnnotation *)annotation;
+        _detailsAnnotation = anno;
+        NSUInteger num = anno.tag;
+        DetailsAnnotationView *annotationView =(DetailsAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:@"DetailsAnnotationView"];
+        if (!annotationView) {
+            
+            annotationView = [[DetailsAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"DetailsAnnotationView"];
+        }
+        annotationView.tag = num;
+        MapItemInfoVO *vo = [self.dataArray objectAtIndex:num];
+        [annotationView setCellUI:vo];
+        
+        CGPoint selectCenter =[mapView convertCoordinate:annotation.coordinate toPointToView:self.view];
+        CGPoint center =self.view.center;//[mapView convertCoordinate:_mapView.centerCoordinate toPointToView:self.view];
+        CGFloat angle = [Utils getAngleByPoint:selectCenter center:center];
+        CGPoint newCenter = CGPointMake(annotationView.cell.center.x - (annotationView.cell.bounds.size.width/2 * sin(angle)), annotationView.cell.center.y - (annotationView.cell.bounds.size.width/2 * cos(angle)));
+        
+        
+        [annotationView.cell toAppearItemsView:newCenter angle:angle];
+        [annotationView.cell setDetailsViewBlock:^(ItemView *btn) {
+            [self clickItemButton:btn];
+        }];
+        
+        return annotationView;
+        
+	}
+    else if ([annotation isKindOfClass:[PinAnnotation class]]) {
+       
+        PinAnnotation *anno = (PinAnnotation *)annotation;
+        NSUInteger num = anno.tag;
+        static int countnum = 0;
+        NSLog(@"anno tag is %d",countnum);
+        PinAnnotationView *annotationView =(PinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:@"PinAnnotationView"];
+        if (!annotationView) {
+            
+            annotationView = [[PinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:@"PinAnnotationView"];
+            switch (countnum) {
+                case 0:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_tagshopping"];
+                    break;
+                case 1:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_tagclassifieds"];
+                    break;
+                case 2:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_tagjob"];
+                    break;
+                case 3:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_tagmoment"];
+                    break;
+                case 4:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_taglight"];
+                    break;
+                case 5:
+                    annotationView.imgView.image = [UIImage imageNamed:@"mapview_tagwardrobe"];
+                    break;
+                default:
+                    break;
+            }
+            
+            countnum++;
+        }
+        annotationView.tag = num;
+        return annotationView;
+        
+    }
+	return nil;
+}
+
+
 #pragma mark -Button Action
 
 - (void)navBtnClick:(UIButton *)sender
 {
     if (sender.tag==2) {
-        [UIView animateWithDuration:0.5 animations:^{
-            controlView.frame = CGRectMake(47, 130, 226, 226);
-            controlView.layer.cornerRadius = 113;
-        }];
+        if (controlView) {
+            [self.view bringSubviewToFront:controlView];
+            [self.view addSubview:controlView];
+            [UIView animateWithDuration:0.5 animations:^{
+                controlView.frame = CGRectMake(47, 130, 226, 226);
+                controlView.layer.cornerRadius = 113;
+            }];
+        }else
+        {
+            [self createControlPanel];
+            [UIView animateWithDuration:0.5 animations:^{
+                controlView.frame = CGRectMake(47, 130, 226, 226);
+                controlView.layer.cornerRadius = 113;
+            }];
+        }
+        
     }
     
 }

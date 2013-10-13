@@ -25,26 +25,18 @@
    PICircularProgressView *picProgressView;
 }
 
-@property (strong, nonatomic)  UIView *videoPreviewView;
 
-@property (strong, nonatomic) UIProgressView *videoRecrodingProgress;
-
-@property (strong, nonatomic)  UIView *busyView;
-
+@property (nonatomic,retain) UIView *cameraView;
 @property (strong, nonatomic)  UIButton *saveButton;
 @property (strong, nonatomic) UIButton *recordButton;
 @property (strong, nonatomic)  UIButton *cancelButton;
 @property (strong,nonatomic) UIView *controlView;
 @property (strong,nonatomic) UIButton *saveAndPlayBtn;
-@property (nonatomic, retain) MPMoviePlayerController* player;
-@property (nonatomic,retain) NSURL *finalOutputFileURL;
-@property (nonatomic,retain) NSURL *finalOutputFileURL2;
+@property (nonatomic,assign) int recordingStatus;
+@property (nonatomic,assign) float currentSeconds;
 
 
-- (void)recordTouchDown:(id)sender;
-- (void)recordTouchCancel:(id)sender;
-- (void)recordTouchUp:(id)sender;
-- (void)saveRecording:(id)sender;
-- (void)cancelAction:(id)sender;
+
+
 
 @end

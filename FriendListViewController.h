@@ -13,7 +13,15 @@
 #import <QuartzCore/QuartzCore.h>
 #import "MapDetailsAnimation.h"
 #import <CoreLocation/CoreLocation.h>
-@interface FriendListViewController : UIViewController<UINavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate,CLLocationManagerDelegate>
+
+typedef struct {
+	CLLocationDegrees latitudeLeft;
+    CLLocationDegrees latitudeRight;
+	CLLocationDegrees longitudeUp;
+    CLLocationDegrees longitudeDown;
+} AreaLocation;
+
+@interface FriendListViewController : UIViewController<UINavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate,CLLocationManagerDelegate,MKMapViewDelegate>
 {
     CGFloat getViewHeight;
     UIView *userTabBar;
@@ -23,7 +31,11 @@
     UIButton *btn_comment;
     UIButton *btn_activity;
     UIButton *btn_map ;
+    CLLocationCoordinate2D          newLocCoordinate;
 }
+@property (strong, nonatomic)  MKMapView *mapView;
+@property (nonatomic, strong) NSString *strTitle;
+@property (nonatomic, strong) NSMutableArray    *dataArray;
 @property (nonatomic,retain) UITableView *mTableView;
 @property (nonatomic,retain) MapDetailsAnimation *mapInfoView;
 @end

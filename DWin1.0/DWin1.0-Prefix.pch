@@ -15,4 +15,7 @@
 #import "Utils.h"
 #import "HttpHelper.h"
 #import "ZXMacro.h"
+#import "TableTestViewController.h"
+#import "PersonalSpaceViewController.h"
+#import "IIViewDeckController.h"
 #endif

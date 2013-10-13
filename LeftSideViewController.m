@@ -10,6 +10,10 @@
 #import "ZXMacro.h"
 #import "IIViewDeckController.h"
 #import "TextEditViewController.h"
+#import "BundleSpaceViewController.h"
+#import "FriendchatViewController.h"
+#import "MessageViewController.h"
+#import "FriendListViewController.h"
 @interface LeftSideViewController ()
 
 @end
@@ -27,7 +31,7 @@
 
 - (void)setupView
 {
-    arr_title = [NSArray arrayWithObjects:@"Home",@"Bubble Space",@"Friends",@"Chat",@"Message",@"Joined activity",@"Setting", nil];
+    arr_title = [NSArray arrayWithObjects:@"Home",@"Bubble Space",@"Friends",@"Message",@"Joined activity",@"Setting", nil];
     _mTableView = [[UITableView alloc] initWithFrame:self.view.bounds];
     _mTableView.delegate = self;
     _mTableView.dataSource = self;
@@ -63,7 +67,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 7;
+    return 6;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -81,11 +85,37 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    UIView *selectedview = [[UIView alloc] initWithFrame:CGRectMake(10, 0, 100, 40)];
-//    selectedview.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
-//    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//    [cell.contentView addSubview:selectedview];
-    self.viewDeckController.centerController = [[TextEditViewController  alloc] init];
+
+    switch (indexPath.row) {
+        case 0:
+        {
+            UINavigationController *navBubble = [[UINavigationController alloc] initWithRootViewController:[[FriendListViewController alloc] init]];
+            self.viewDeckController.centerController = navBubble;
+        }
+            
+            break;
+        case 1:
+        {
+            UINavigationController *navBubble = [[UINavigationController alloc] initWithRootViewController:[[PersonalSpaceViewController alloc] init]];
+            self.viewDeckController.centerController = navBubble;
+        }
+            break;
+        case 2:
+        {
+            UINavigationController *navBubble = [[UINavigationController alloc] initWithRootViewController:[[TableTestViewController alloc] init]];
+            self.viewDeckController.centerController = navBubble;
+        }
+            break;
+        case 3:
+        {
+            UINavigationController *navBubble = [[UINavigationController alloc] initWithRootViewController:[[MessageViewController alloc] init]];
+            self.viewDeckController.centerController = navBubble;
+        }
+            break;
+        default:
+            break;
+    }
+    
     
 }
 

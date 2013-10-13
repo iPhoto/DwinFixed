@@ -18,14 +18,14 @@
 #import "TheFirstViewController.h"
 #import "TestViewController.h"
 #import "TVShowViewController.h"
-#import "MapViewController.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[MapViewController alloc] init]];
+    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[[MapViewController alloc] init]];
   // self.window.rootViewController = [[TestViewController alloc] init] ;
     //self.window.rootViewController = nav;
      IIViewDeckController* deckController = [self generateControllerStack];
@@ -46,14 +46,15 @@
     [[UINavigationBar appearance] setBackgroundImage:imageNew forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: [UIColor whiteColor],
                                      UITextAttributeFont: [UIFont fontWithName:HELVETICANUEU size:25]}];
+    [[UIBarButtonItem appearance] setTintColor:RGB(91., 165., 200.)];
 }
 
 - (IIViewDeckController*)generateControllerStack {
     LeftSideViewController* leftController = [[LeftSideViewController alloc] init];
         
-    UIViewController *centerController = [[FriendListViewController alloc] init];
-    centerController = [[UINavigationController alloc] initWithRootViewController:centerController];
-    IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:centerController leftViewController:leftController];
+    FriendListViewController *centerController = [[FriendListViewController alloc] init];
+    UINavigationController *centerNav = [[UINavigationController alloc] initWithRootViewController:centerController];
+    IIViewDeckController* deckController =  [[IIViewDeckController alloc] initWithCenterViewController:centerNav leftViewController:leftController];
     //deckController.rightSize = 100;
     deckController.leftSize = 160;
     [deckController disablePanOverViewsOfClass:NSClassFromString(@"_UITableViewHeaderFooterContentView")];

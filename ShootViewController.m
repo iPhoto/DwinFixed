@@ -138,17 +138,19 @@ enum
     
     // 添加通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveImageToPhotoAlbum) name:kImageCapturedSuccessfully object:nil];
+    //
+    self.view.backgroundColor = [UIColor blackColor];
     // 禁止侧边栏滑动
     self.viewDeckController.panningMode = IIViewDeckNoPanning;
     // 初始化captureSessionManager
     self.captureManager = [[CaptureSessionManager alloc] init];
-    
+    self.captureManager.captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
     [self.captureManager addVideoInputFrontCamera:NO];
     [self.captureManager addStillImageOutput];
     [[self captureManager] addVideoPreviewLayer];
 	CGRect layerRect = CGRectMake(0, 0, kScreen_Width, 426.6);
     [[[self captureManager] previewLayer] setBounds:layerRect];
-    [[[self captureManager] previewLayer] setPosition:CGPointMake(CGRectGetMidX(layerRect),CGRectGetMidY(layerRect))];
+    [[[self captureManager] previewLayer] setPosition:CGPointMake(CGRectGetMidX(self.view.bounds),CGRectGetMidY(self.view.bounds))];
 	[[[self view] layer] addSublayer:[[self captureManager] previewLayer]];
     // controlview
     self.controlView = [[UIView alloc] initWithFrame:CGRectMake(0, kContent_Height-68, 320, 68)];
@@ -188,12 +190,15 @@ enum
 
 - (void)setupFilterView
 {
+    [self.controlView removeFromSuperview];
     isScrollHide = NO;
     // 初始化滤镜视图
     _theFilterView = [[UIView alloc] initWithFrame:self.view.bounds];
+    _theFilterView.backgroundColor = [UIColor blackColor];
     [self.view addSubview:_theFilterView];
     // 设置图片
-    imageViewShowEffect = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, kScreen_Height)];
+    imageViewShowEffect = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 426.6)];
+    imageViewShowEffect.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
     imageViewShowEffect.image = self.shootStillImage;
     imageViewShowEffect.userInteractionEnabled = YES;
    //imageViewShowEffect.contentMode = UIViewContentModeScaleAspectFit;
@@ -205,11 +210,11 @@ enum
     // 取消按钮
     UIButton *btn_cancel = [UIButton buttonWithType:UIButtonTypeCustom];
     [btn_cancel setBackgroundImage:[UIImage imageNamed:@"takephoto_cancel"] forState:UIControlStateNormal];
-     btn_cancel.frame = CGRectMake(5, 5, 44, 44);
+     btn_cancel.frame = CGRectMake(5, 12, 44, 44);
     [btn_cancel addTarget:self action:@selector(popView:) forControlEvents:UIControlEventTouchUpInside];
     [_filterControlView addSubview:btn_cancel];
     // 滤镜
-    filterScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kContent_Height-138, 320, 70)];
+    filterScroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 70)];
     filterScroll.backgroundColor = [UIColor colorWithWhite:1 alpha:0.7];
     filterScroll.contentSize = CGSizeMake(320*2+50, 70);
     for (int i=0; i<14; i++) {
@@ -234,22 +239,22 @@ enum
     btn_hideFilter.frame = CGRectMake(320-40, kContent_Height-138-24, 36, 24);
     [btn_hideFilter setBackgroundImage:[UIImage imageNamed:@"takephoto_hidefilter"] forState:UIControlStateNormal];
     [btn_hideFilter addTarget:self action:@selector(hideFilterScroll:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn_hideFilter];
+    //[self.view addSubview:btn_hideFilter];
     // 确定
     UIButton *btn_confirm = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn_confirm.frame = CGRectMake(320-40, 5, 36, 36);
+    btn_confirm.frame = CGRectMake(320-40, 12, 36, 36);
     [btn_confirm setBackgroundImage:[UIImage imageNamed:@"takephoto_sure"] forState:UIControlStateNormal];
     [btn_confirm addTarget:self action:@selector(confirmButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [_filterControlView addSubview:btn_confirm];
     // 复杂滤镜
     btn_hardFilter = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn_hardFilter.frame = CGRectMake(80, 5, 44, 44);
+    btn_hardFilter.frame = CGRectMake(80, 12, 44, 44);
     [btn_hardFilter setBackgroundImage:[UIImage imageNamed:@"takephoto_complefilter"] forState:UIControlStateNormal];
     [btn_hardFilter addTarget:self action:@selector(complexFilter:) forControlEvents:UIControlEventTouchUpInside];
     [_filterControlView addSubview:btn_hardFilter];
     // 裁剪图片
    btn_cutImage = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn_cutImage.frame = CGRectMake(200, 5, 44, 44);
+    btn_cutImage.frame = CGRectMake(200, 12, 44, 44);
     [btn_cutImage setBackgroundImage:[UIImage imageNamed:@"takephoto_cutpicture"] forState:UIControlStateNormal];
     [btn_cutImage addTarget:self action:@selector(cutPicture:) forControlEvents:UIControlEventTouchUpInside];
     [_filterControlView addSubview:btn_cutImage];
@@ -348,7 +353,7 @@ enum
 - (void)complexFilter:(UIButton *)sender
 {
     if (isComplexFilterOpen) {
-        [sender setBackgroundImage:[UIImage imageNamed:@"takephoto_complexfilter"] forState:UIControlStateNormal];
+        [sender setBackgroundImage:[UIImage imageNamed:@"takephoto_complefilter"] forState:UIControlStateNormal];
         [btnImage removeFromSuperview];
         isComplexFilterOpen = !isComplexFilterOpen;
     }
@@ -363,7 +368,17 @@ enum
 
 - (void)cutPicture:(UIButton *)sender
 {
-    
+    if (isCutModelOpen) {
+        [sender setBackgroundImage:[UIImage imageNamed:@"takephoto_cutpicture"] forState:UIControlStateNormal];
+        [btnImage removeFromSuperview];
+        isCutModelOpen = !isCutModelOpen;
+    }
+    else
+    {
+        [sender setBackgroundImage:[UIImage imageNamed:@"takephoto_cutpictureselected"] forState:UIControlStateNormal];
+        isCutModelOpen = YES;
+        [self createCube];
+    }
 }
 
 - (void)hideFilterScroll:(UIButton *)sender
@@ -402,7 +417,7 @@ enum
 {
     UIGraphicsBeginImageContext(image1.size);
     //Draw image1
-    [image1 drawInRect:CGRectMake(point1.x, point1.y, kScreen_Width, kScreen_Height)];
+    [image1 drawInRect:CGRectMake(point1.x, point1.y, 320, 426.6)];
     //Draw image2
     [image2 drawInRect:CGRectMake(point2.x, point2.y, image2.size.width, image2.size.height)];
     
@@ -620,7 +635,7 @@ enum
 // 显示滤镜并且储存照片
 - (void)saveImageToPhotoAlbum
 {
-    self.shootStillImage = [self imageWithImage:self.captureManager.stillImage scaledToSize:CGSizeMake(kScreen_Width,kScreen_Height)];
+    self.shootStillImage = [self imageWithImage:self.captureManager.stillImage scaledToSize:CGSizeMake(kScreen_Width,426.6)];
    // self.shootStillImage = [self getImageFromImage:self.shootStillImage subImageSize:CGSizeMake(kScreen_Width, kScreen_Height) subImageRect:CGRectMake(0, 0, kScreen_Width, kScreen_Height)];
     NSLog(@"shoot still image frame%f,%f",self.shootStillImage.size.width,self.shootStillImage.size.height);
     [self setupFilterView];

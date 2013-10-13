@@ -29,13 +29,29 @@ static double timeLive = 1./30;
 #import "DWinUtils.h"
 #import <QuartzCore/QuartzCore.h>
 #import "RecordingViewController.h"
-
+#import "Singel.h"
 #import "AGViewController.h"
+#import "AddFivePicViewController.h"
+#import "AddFourViewController.h"
+#import "AddPicViewController.h"
+#import "GifMakerViewController.h"
+#import "MergePicViewController.h"
 //#import "AudioListViewController.h"
 // 录影按钮次序
 static int kindOfBtnImage = 2;
 @interface TextEditViewController ()
+{
+    UIButton *btn_love ;
+    UIButton *btn_inspiration ;
+    UIButton *btn_happy ;
+    UIButton *btn_nature ;
+    UIButton *btn_normal ;
+    UIButton *btn_sad ;
+    NSInteger finalTag;
+    int pic_flag;
+    AGImagePickerController *ipc;
 
+}
 @end
 
 
@@ -46,6 +62,19 @@ static int kindOfBtnImage = 2;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
+        
+           self.selectedPhotos = [NSMutableArray array];
+        
+       ///////////////////5 3 4 张图片的arr////////////////
+        self.arr_push =[[NSMutableArray alloc]init];
+        self.arr_push3=[[NSMutableArray alloc]init];
+        self.arr_push4=[[NSMutableArray alloc]init];
+        self.gifarr = [[NSMutableArray alloc] init];
+        ////////////////////选择照片的flag////////////////////////////////
+        
+        pic_flag = 0;
+
     }
     return self;
 }
@@ -53,7 +82,27 @@ static int kindOfBtnImage = 2;
 - (void)viewWillAppear:(BOOL)animated
 {
     self.navigationController.navigationBarHidden = NO;
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleImageGet:) name:@"GalleryImage" object:nil];
+   
+    
+    
+    
+    
+
 }
+///////////////////////将获得的照片地址转化为图片方法//////////////////////
+-(UIImage *)fullResolutionImageFromALAsset:(ALAsset *)asset
+{
+    ALAssetRepresentation *assetRep = [asset defaultRepresentation];
+    CGImageRef imgRef = [assetRep fullResolutionImage];
+    UIImage *img123 = [UIImage imageWithCGImage:imgRef
+                                          scale:assetRep.scale
+                                    orientation:(UIImageOrientation)assetRep.orientation];
+    return img123;
+}
+
+
+
 
 #pragma mark -create NavigationBar
 - (void)setNavgationBar
@@ -129,48 +178,49 @@ static int kindOfBtnImage = 2;
     [TagAndtextView addSubview:tagButtonView];
     // 添加标签按钮
     // love tag
-    UIButton *btn_love = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_love = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_love.frame = CGRectMake(9, 5, 24 , 34);
     btn_love.tag = kLoveTag;
     [btn_love addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
     [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
     [tagButtonView addSubview:btn_love];
     // inspiration tag
-    UIButton *btn_inspiration = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_inspiration = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_inspiration.frame = CGRectMake(50, 5, 52 , 36);
     [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
     btn_inspiration.tag = kInspirationTag;
     [btn_inspiration addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
     [tagButtonView addSubview:btn_inspiration];
     // happy
-    UIButton *btn_happy = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_happy = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_happy.frame = CGRectMake(112, 5, 32 , 36);
     [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
     btn_happy.tag = kHappyTag;
     [btn_happy addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
     [tagButtonView addSubview:btn_happy];
     // nature
-    UIButton *btn_nature = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_nature = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_nature.frame = CGRectMake(160, 5, 34 , 34);
     [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
     btn_nature.tag = kNatureTag;
     [btn_nature addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
     [tagButtonView addSubview:btn_nature];
     // normal
-    UIButton *btn_normal = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_normal = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_normal.frame = CGRectMake(211, 5, 36 , 34);
     [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
     btn_normal.tag = kNormalTag;
     [btn_normal addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
     [tagButtonView addSubview:btn_normal];
     // sad
-    UIButton *btn_sad = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_sad = [UIButton buttonWithType:UIButtonTypeCustom];
     btn_sad.frame = CGRectMake(268, 5, 23 , 34);
     [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
     btn_sad.tag = kSadTag;
     [btn_sad addTarget:self action:@selector(btnChooseTag:) forControlEvents:UIControlEventTouchUpInside];
 
     [tagButtonView addSubview:btn_sad];
+   
     // textView
     mtextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, 280, 180)];
     
@@ -234,7 +284,7 @@ static int kindOfBtnImage = 2;
     imageWhiteBg.userInteractionEnabled = YES;
     [controlView addSubview:imageWhiteBg];
     // placehold imageview
-    placeholdImage = [[UIImageView alloc] initWithFrame:CGRectMake(9, 4, 44, 34)];
+    placeholdImage = [[UIImageView alloc] initWithFrame:CGRectMake(9, 0, 44, 44)];
     placeholdImage.image = [UIImage imageNamed:@"textedit_placeholdimage"];
     [imageWhiteBg addSubview:placeholdImage];
     placeholdImage.userInteractionEnabled = YES;
@@ -632,7 +682,7 @@ static int kindOfBtnImage = 2;
     recorderBG.userInteractionEnabled = YES;
     // 取消按钮
     UIButton *btn_cancel = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn_cancel.frame = CGRectMake(240-40, 8, 36, 36);
+    btn_cancel.frame = CGRectMake(240-20, -1, 24, 60);
     [btn_cancel setBackgroundImage:[UIImage imageNamed:@"textedit_cancelaudio"] forState:UIControlStateNormal];
     [btn_cancel addTarget:self action:@selector(cancelAudioFile) forControlEvents:UIControlEventTouchUpInside];
     [recorderBG addSubview:btn_cancel];
@@ -828,8 +878,15 @@ static int kindOfBtnImage = 2;
     _controPhotoPanel.backgroundColor = [UIColor clearColor];
     // 拍照
     for (int i=0; i<4; i++) {
+        if (i==1) {
+            continue;
+        }
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.frame = CGRectMake(16*(i+1)+60*i, 40, 60, 60);
+         btn.frame = CGRectMake(16*(i+1)+60*i, 40, 60, 60);
+        if (i==2) {
+            btn.center = CGPointMake(160, 70);
+        }
+       
         [btn addTarget:self action:@selector(controlPhotoPanelBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         btn.tag = 1000+i;
         UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"controlphoto%d",i+1]];
@@ -853,6 +910,34 @@ static int kindOfBtnImage = 2;
         case 1001:
         {
             [self.navigationController pushViewController:[[AGViewController alloc] init] animated:YES];
+        }
+            break;
+        case 1002:
+        { // Show saved photos on top
+            ipc.shouldShowSavedPhotosOnTop = NO;
+            ipc.shouldChangeStatusBarStyle = YES;
+            ipc.selection = self.selectedPhotos;
+            isGifPress = NO;
+            //    ipc.maximumNumberOfPhotosToBeSelected = 1;
+            [self presentViewController:ipc animated:YES completion:nil];
+            
+         
+
+        }
+            break;
+        case 1003:
+        { // Show saved photos on top
+            NSLog(@"gif go");
+            ipc.shouldShowSavedPhotosOnTop = NO;
+            ipc.shouldChangeStatusBarStyle = YES;
+            ipc.selection = self.selectedPhotos;
+            isGifPress = YES;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"gif1" object:nil];
+            [[NSUserDefaults standardUserDefaults] setObject:@"GIF" forKey:@"GIF"];
+            [self presentViewController:ipc animated:YES completion:nil];
+            
+            
+            
         }
             break;
         default:
@@ -895,18 +980,114 @@ static int kindOfBtnImage = 2;
     if (sender.tag==1000) {
         [self.navigationController pushViewController:[[RecordingViewController alloc] init] animated:YES];
     }
+    if (sender.tag==1001)
+    {
+         [self.navigationController pushViewController:[[MergePicViewController alloc] init] animated:YES];
+    }
 }
 
 
-
-
-
+/*
+kInspirationTag,
+kHappyTag,
+kNatureTag,
+kNormalTag,
+kSadTag
+*/
 
 
 
 - (void)btnChooseTag:(UIButton *)btn
 {
-    NSLog(@"%d",btn.tag);
+    switch (btn.tag) {
+        case kLoveTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+
+            
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_loveselected"] forState:UIControlStateNormal];
+            finalTag = kLoveTag;
+            
+        }
+            break;
+        case kHappyTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+            
+            
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happyselected"] forState:UIControlStateNormal];
+            finalTag = kHappyTag;
+        }
+            break;
+        case kNatureTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+            
+            
+             [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_natureselected"] forState:UIControlStateNormal];
+            finalTag = kNatureTag;
+        }
+            break;
+        case kNormalTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+            
+            
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normalselected"] forState:UIControlStateNormal];
+            finalTag = kNormalTag;
+        }
+            break;
+        case kSadTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+            
+            
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sadselected"] forState:UIControlStateNormal];
+            finalTag = kSadTag;
+        }
+            break;
+        case kInspirationTag:
+        {
+            [btn_love setBackgroundImage:[UIImage imageNamed:@"textedit_love"] forState:UIControlStateNormal];
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inpiration"] forState:UIControlStateNormal];
+            [btn_happy setBackgroundImage:[UIImage imageNamed:@"textedit_happy"] forState:UIControlStateNormal];
+            [btn_nature setBackgroundImage:[UIImage imageNamed:@"textedit_nature"] forState:UIControlStateNormal];
+            [btn_normal setBackgroundImage:[UIImage imageNamed:@"textedit_normal"] forState:UIControlStateNormal];
+            [btn_sad setBackgroundImage:[UIImage imageNamed:@"textedit_sad"] forState:UIControlStateNormal];
+            
+            
+            [btn_inspiration setBackgroundImage:[UIImage imageNamed:@"textedit_inspirationselected"] forState:UIControlStateNormal];
+            finalTag = kInspirationTag;
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 #pragma mark - UITextView Delegate Methods
@@ -944,9 +1125,173 @@ static int kindOfBtnImage = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    {
+          ipc = [[AGImagePickerController alloc] initWithDelegate:self];
+        __block AGImagePickerController *blockIpc = ipc;
+        __block TextEditViewController *blockSelf = self;
+        __block NSMutableArray *arr = _gifarr;
+        
+        ipc.didFailBlock = ^(NSError *error) {
+            NSLog(@"Fail. Error: %@", error);
+            
+            if (error == nil) {
+                //[blockSelf.selectedPhotos removeAllObjects];
+                NSLog(@"User has cancelled.");
+                NSLog(@"dismiss2");
+                double delayInSeconds = 7;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [blockIpc dismissViewControllerAnimated:YES completion:nil];
+                    NSLog(@"dismiss");
+                });
+                
+            } else {
+                
+                // We need to wait for the view controller to appear first.
+                double delayInSeconds = 7;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [blockIpc dismissViewControllerAnimated:YES completion:nil];
+                    NSLog(@"dismiss");
+                });
+            }
+            
+        };
+        ipc.didFinishBlock = ^(NSArray *info) {
+            // [blockSelf.selectedPhotos setArray:info];
+            
+            
+            NSLog(@"%@",info);
+            ////////////////////////3 4 5 张照片走的方法/////////////////////////
+            for (int i=0; i<[info count]; i++) {
+                UIImage *img = [blockSelf fullResolutionImageFromALAsset:[info objectAtIndex:i]];
+                [arr addObject:img];
+            }
+            if ([info count]==3)
+            {
+                pic_flag=3;
+                UIImage *img  = [self fullResolutionImageFromALAsset:[info objectAtIndex:0]];
+                UIImage *img1 = [self fullResolutionImageFromALAsset:[info objectAtIndex:1]];
+                UIImage *img2 = [self fullResolutionImageFromALAsset:[info objectAtIndex:2]];
+                [_arr_push3 addObject: img];
+                [_arr_push3 addObject:img1];
+                [_arr_push3 addObject:img2];
+            }
+            if ([info count]==4)
+            {
+                pic_flag=4;
+                UIImage *img=[self fullResolutionImageFromALAsset:[info objectAtIndex:0]];
+                UIImage *img1=[self fullResolutionImageFromALAsset:[info objectAtIndex:1]];
+                UIImage *img2=[self fullResolutionImageFromALAsset:[info objectAtIndex:2]];
+                UIImage *img3=[self fullResolutionImageFromALAsset:[info objectAtIndex:3]];
+                
+                [_arr_push4 addObject: img];
+                [_arr_push4 addObject:img1];
+                [_arr_push4 addObject:img2];
+                [_arr_push4 addObject:img3];
+                
+            }
+            if ([info count]==5)
+                
+            {
+                pic_flag=5;
+                
+                im=[self fullResolutionImageFromALAsset:[info objectAtIndex:0]];
+                im1 = [self fullResolutionImageFromALAsset:[info objectAtIndex:1] ];
+                im2 = [self fullResolutionImageFromALAsset:[info objectAtIndex:2] ];
+                im3 = [self fullResolutionImageFromALAsset:[info objectAtIndex:3] ];
+                im4 = [self fullResolutionImageFromALAsset:[info objectAtIndex:4] ];
+                [_arr_push addObject: im];
+                [_arr_push addObject:im1];
+                [_arr_push addObject:im4];
+                [_arr_push addObject:im2];
+                [_arr_push addObject:im3];
+                
+            }
+            
+            [blockIpc dismissViewControllerAnimated:YES completion:nil];
+            
+        };
+        
+    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(push) name:@"fanhui" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gifMaker) name:@"makegifpost" object:nil];
     [self setupView];
 	// Do any additional setup after loading the view.
 }
+
+- (void)gifMaker
+{
+    NSLog(@"gifmaker");
+    [self performSelector:@selector(makergo) withObject:self afterDelay:2];
+}
+
+- (void)makergo
+{
+     Singel * da=[Singel danli];
+    da.fourpicArr=[[NSArray alloc]init];
+    GifMakerViewController*add4=[[GifMakerViewController alloc]init];
+    da.fourpicArr=_gifarr;
+    
+    [self.navigationController pushViewController:add4 animated:YES];
+
+}
+
+-(void)push
+{
+    [self performSelector:@selector(del) withObject:self afterDelay:2];
+    
+    
+}
+-(void)del
+{
+    if (isGifPress) {
+        GifMakerViewController *gifmaker = [[GifMakerViewController alloc] init];
+        gifmaker.imageArray = [NSArray arrayWithArray:_gifarr];
+        [self.navigationController pushViewController:gifmaker animated:YES];
+    }else
+    {
+        
+        Singel * da=[Singel danli];
+        if (pic_flag==4)
+        {
+            da.fourpicArr=[[NSArray alloc]init];
+            AddFourViewController*add4=[[AddFourViewController alloc]init];
+            da.fourpicArr=_arr_push4;
+            
+            [self.navigationController pushViewController:add4 animated:YES];
+        }
+        
+        if (pic_flag==3)
+        {
+            da.threepicArr=[[NSArray alloc]init];
+            
+            
+            AddPicViewController*add=[[AddPicViewController alloc]init];
+            
+            da.threepicArr=_arr_push3;
+            [self.navigationController pushViewController:add animated:YES];
+            
+        }
+        
+        if (pic_flag == 5) {
+            
+            
+            
+            da.fivepicArr=[[NSArray alloc]init];
+            
+            AddFivePicViewController*add5=[[AddFivePicViewController alloc]init];;
+            da.fivepicArr=_arr_push;
+            
+            [self.navigationController pushViewController:add5 animated:YES];
+            
+        }
+    }
+   
+    
+}
+
+
 
 - (void)didReceiveMemoryWarning
 {
