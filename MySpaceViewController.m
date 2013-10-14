@@ -15,6 +15,7 @@
 #define kScrollAlreadyDown 130
 #import <QuartzCore/QuartzCore.h>
 #import "FriendListViewController.h"
+#import "MySkillViewController.h"
 @interface MySpaceViewController ()
 
 @end
@@ -202,6 +203,23 @@
     lab_skill.backgroundColor = [UIColor clearColor];
     lab_skill.textColor = [UIColor whiteColor];
     [firstView addSubview:lab_skill];
+    
+    
+    
+    
+    
+    ///////////////////////////////////////////////////////////
+    UIButton *skill_btn =  [UIButton buttonWithType:UIButtonTypeCustom];
+    skill_btn.frame=CGRectMake(200, 86+17, 50, 32);
+    [skill_btn addTarget:self action:@selector(skill) forControlEvents:UIControlEventTouchUpInside];
+    [skill_btn setTitle:@"skill" forState:UIControlStateNormal];
+    [firstView addSubview:skill_btn];
+    skill_btn.layer.cornerRadius=5;
+    [skill_btn setBackgroundColor:[UIColor redColor]];
+    
+    
+    /////////////////////////////////////////////
+    
 
   
     
@@ -251,6 +269,18 @@
     [empty_btn addTarget:self action:@selector(empty) forControlEvents:UIControlEventTouchUpInside];
     [secondView addSubview:empty_btn];
 }
+
+/////////////////////////////
+
+
+-(void)skill
+{
+    MySkillViewController*skill=[[MySkillViewController alloc]init];
+    [self.navigationController pushViewController:skill animated:YES];
+    
+    
+}
+/////////////////////////////
 //pic
 -(void)empty
 {

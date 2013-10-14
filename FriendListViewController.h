@@ -32,6 +32,11 @@ typedef struct {
     UIButton *btn_activity;
     UIButton *btn_map ;
     CLLocationCoordinate2D          newLocCoordinate;
+    
+    UIView *back_View,*back_View2,*back_View3,*back_View4,*back_View5;
+    ////////activity///////////
+    UIScrollView *scr;
+    UIImageView *imageViewBackGround ;
 }
 @property (strong, nonatomic)  MKMapView *mapView;
 @property (nonatomic, strong) NSString *strTitle;

@@ -20,6 +20,11 @@
 #import "DetailsAnnotation.h"
 #import "DetailsAnnotationView.h"
 #import "MKMapView+MapViewUtil.h"
+#import "ActivityViewController.h"
+#import "ActivityIdeaViewController.h"
+#import "ActivityProjectfirstViewController.h"
+#import "ActivityJobViewController.h"
+#import "ActivityClassifiedViewController.h"
 #define kTabAlreadyDownUserViewY 0
 #define kTabAlreadyUpUserViewY -80
 #define kScrollAlreadyUp 50
@@ -47,6 +52,576 @@
         // Custom initialization
     }
     return self;
+}
+-(void)setactivity
+{
+    
+    
+    scr = [[UIScrollView alloc]initWithFrame:CGRectMake(10, 60, 300, 500)];
+    scr.backgroundColor = [UIColor whiteColor];
+    scr.indicatorStyle=UIScrollViewIndicatorStyleWhite;
+    scr.backgroundColor = [UIColor clearColor];
+    scr.contentSize = CGSizeMake(300, 1444);
+    scr.delegate = self;
+    [self.view addSubview:scr];
+    
+    ///////////////////////////first  view //////////////////////////////
+    
+    back_View = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 300, 252)];
+    
+    back_View.backgroundColor = RGBAlpha(1, 1, 1, 0.3);
+    
+    back_View.layer.cornerRadius = 5;
+    
+    [scr addSubview:back_View];
+    
+    UIImageView *bacView  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    UIImageView *linview  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50+69, 300, 1)];
+    bacView.userInteractionEnabled = YES;
+    bacView .image = [UIImage imageNamed:@"activity_main_nav"];
+    linview .image = [UIImage imageNamed:@"activity_line"];
+    
+    [back_View addSubview: bacView];
+    //[back_View addSubview: linview];
+    
+    //    /////////////////acccess pic ////////////////
+    UIImageView *access_imgv = [[UIImageView alloc]initWithFrame:CGRectMake(558/2, 17, 9, 16)];
+    access_imgv.image = [UIImage imageWithContentsOfFile:FileS(@"activity_right_arrow", @"png")];
+    [bacView addSubview:access_imgv];
+    //
+    
+    UILabel*lab_title=[[UILabel alloc]initWithFrame:CGRectMake(50, 0, 200, 50)];
+    lab_title.backgroundColor = [UIColor clearColor];
+    lab_title.text = @"Idea";
+    lab_title.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:18];
+    lab_title.textColor = [UIColor whiteColor];
+    [back_View addSubview:lab_title];
+    
+    UIButton *btn_title = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_title.frame = CGRectMake(0, 0, 300, 44);
+    [btn_title addTarget:self action:@selector(changetxt) forControlEvents:UIControlEventTouchUpInside];
+    [bacView addSubview:btn_title];
+    
+    UIButton *btn_headtitle = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_headtitle.frame = CGRectMake(8, 8, 34, 34);
+    
+    [btn_headtitle setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_idea_pic", @"png")] forState:UIControlStateNormal];
+    [bacView addSubview:btn_headtitle];
+    
+    
+    UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(10, 50, 200, 64/2)];
+    
+    lab.text = @"Most Popular";
+    lab.backgroundColor = [UIColor clearColor];
+    lab.textColor = [UIColor whiteColor];
+    [back_View addSubview:lab];
+    
+    
+    /////////////////最热的人的头像image,逗号img////////
+    UIImageView *imgView      = [[UIImageView alloc]initWithFrame:CGRectMake(10, 82, 34, 34)];
+    UIImageView *yinhao_imgv  = [[UIImageView alloc]initWithFrame:CGRectMake(64, 82, 10, 11)];
+    UIImageView *fist_line    = [[UIImageView alloc]initWithFrame:CGRectMake(1, 50+314/2, 298, 1)];
+    UIImageView *yinhao_imgv2 = [[UIImageView alloc]initWithFrame:CGRectMake(560/2, 186, 10, 11)];
+    
+    imgView.image      = [UIImage imageWithContentsOfFile:FileS(@"acti_small", @"png")];
+    yinhao_imgv.image  = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_yinhao1", @"png")];
+    fist_line.image    = [UIImage imageWithContentsOfFile:FileS(@"activity_line", @"png")];
+    yinhao_imgv2.image = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_yinhao2", @"png")];
+    
+    [back_View addSubview:yinhao_imgv2];
+    [back_View addSubview:imgView];
+    [back_View addSubview:yinhao_imgv];
+    [back_View addSubview:fist_line];
+    
+    ///////横线下面的两个按钮////////////
+    
+    for (int a = 0; a<2; a++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(211+44*a, 314/2+50, 44, 44);
+        btn.tag = 10000+a;
+        [btn addTarget:self action:@selector(firstBtn:) forControlEvents:UIControlEventTouchUpInside];
+        if (a==0) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"avtivity_write", @"png")] forState:UIControlStateNormal];
+        }
+        if (a==1) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_star", @"png")] forState:UIControlStateNormal];
+        }
+        [back_View addSubview:btn];
+    }
+    
+    UILabel * txtlabel =[[UILabel alloc]initWithFrame:CGRectMake(100, 100, 100, 35)];
+    UILabel * detailLabel = [[UILabel alloc]initWithFrame:CGRectMake(100, 130, 200, 35)];
+    txtlabel.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    detailLabel.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    txtlabel.text = @"Chiledhood";
+    detailLabel.text = @"If one begins with the phenomenology of consciousness one must give an account ";
+    txtlabel.backgroundColor = [UIColor clearColor];
+    detailLabel.backgroundColor = [UIColor clearColor];
+    detailLabel.numberOfLines = 2;
+    [detailLabel sizeToFit];
+    
+    txtlabel.textColor = [UIColor whiteColor];
+    detailLabel.textColor = [UIColor whiteColor];
+    [back_View addSubview:txtlabel];
+    [back_View addSubview:detailLabel];
+    
+    
+    UILabel *contjoin = [[UILabel alloc]initWithFrame:CGRectMake(20, 50+314/2, 150, 44)];
+    contjoin.text = @"100000Joins";
+    contjoin.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:24*0.6];
+    contjoin.backgroundColor = [UIColor clearColor];
+    contjoin.textColor = [UIColor whiteColor];
+    [back_View addSubview:contjoin];
+    
+    
+    UILabel* timelabel = [[UILabel alloc]initWithFrame:CGRectMake(235, 50, 120, 32)];
+    timelabel.text = @"2013-09-09";
+    timelabel.backgroundColor = [UIColor clearColor];
+    timelabel.textColor = [UIColor whiteColor];
+    timelabel.font =[UIFont fontWithName:HELVETICANEUE_LIGHT size:18*0.6];
+    [ back_View addSubview: timelabel];
+    [ back_View2 addSubview: timelabel];
+    [ back_View3 addSubview: timelabel];
+    [ back_View4 addSubview: timelabel];
+    
+    
+    
+    
+    
+    
+    ///////////////////////////2  view //////////////////////////////
+    
+    back_View2 = [[UIView alloc]initWithFrame:CGRectMake(0, 262, 300, 252)];
+    
+    back_View2.backgroundColor = RGBAlpha(1, 1, 1, 0.3);
+    
+    back_View2.layer.cornerRadius = 5;
+    
+    [scr addSubview:back_View2];
+    
+    UIImageView *bacView2  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    UIImageView *linview2  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50+69, 300, 1)];
+    bacView2.userInteractionEnabled = YES;
+    bacView2 .image = [UIImage imageNamed:@"activity_main_nav"];
+    linview2 .image = [UIImage imageNamed:@"activity_line"];
+    
+    [back_View2 addSubview: bacView2];
+    //[back_View addSubview: linview];
+    
+    //    /////////////////acccess pic ////////////////
+    UIImageView *access_imgv2 = [[UIImageView alloc]initWithFrame:CGRectMake(558/2, 17, 9, 16)];
+    access_imgv2.image = [UIImage imageWithContentsOfFile:FileS(@"activity_right_arrow", @"png")];
+    [bacView2 addSubview:access_imgv2];
+    //
+    
+    UILabel*lab_title2=[[UILabel alloc]initWithFrame:CGRectMake(50, 0, 200, 50)];
+    lab_title2.backgroundColor = [UIColor clearColor];
+    lab_title2.text = @"Project";
+    lab_title2.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:18];
+    lab_title2.textColor = [UIColor whiteColor];
+    [back_View2 addSubview:lab_title2];
+    
+    
+    
+    UIButton *btn_headtitle2 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_headtitle2.frame = CGRectMake(8, 8, 34, 34);
+    
+    [btn_headtitle2 setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_iproject_pic", @"png")] forState:UIControlStateNormal];
+    [bacView2 addSubview:btn_headtitle2];
+    
+    
+    UILabel *lab2 = [[UILabel alloc]initWithFrame:CGRectMake(10, 50, 200, 64/2)];
+    
+    lab2.text = @"Most Popular";
+    lab2.backgroundColor = [UIColor clearColor];
+    lab2.textColor = [UIColor whiteColor];
+    [back_View2 addSubview:lab2];
+    
+    
+    /////////////////最热的人的头像image,逗号img////////
+    UIImageView *imgView2      = [[UIImageView alloc]initWithFrame:CGRectMake(10, 82, 34, 34)];
+    UIImageView *yinhao_imgv22  = [[UIImageView alloc]initWithFrame:CGRectMake(64, 82, 10, 11)];
+    UIImageView *fist_line2   = [[UIImageView alloc]initWithFrame:CGRectMake(1, 50+314/2, 298, 1)];
+    UIImageView *yinhao_imgv222 = [[UIImageView alloc]initWithFrame:CGRectMake(560/2, 186, 10, 11)];
+    
+    imgView2.image      = [UIImage imageWithContentsOfFile:FileS(@"acti_small", @"png")];
+    yinhao_imgv22.image  = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_greenyinhao1", @"png")];
+    fist_line2.image    = [UIImage imageWithContentsOfFile:FileS(@"activity_line", @"png")];
+    yinhao_imgv222.image = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_greenyinhao2", @"png")];
+    
+    [back_View2 addSubview:yinhao_imgv222];
+    [back_View2 addSubview:imgView2];
+    [back_View2 addSubview:yinhao_imgv22];
+    [back_View2 addSubview:fist_line2];
+    
+    
+    UIButton *btn_title2 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_title2.frame = CGRectMake(0, 0, 300, 44);
+    [btn_title2 addTarget:self action:@selector(changetxt2) forControlEvents:UIControlEventTouchUpInside];
+    [back_View2 addSubview:btn_title2];
+    ///////横线下面的两个按钮////////////
+    
+    for (int a = 0; a<2; a++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(211+44*a, 314/2+50, 44, 44);
+        btn.tag = 20000+a;
+        [btn addTarget:self action:@selector(secondBtn:) forControlEvents:UIControlEventTouchUpInside];
+        if (a==0) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_postcv", @"png")] forState:UIControlStateNormal];
+        }
+        if (a==1) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_star", @"png")] forState:UIControlStateNormal];
+        }
+        [back_View2 addSubview:btn];
+    }
+    
+    UILabel * txtlabel2 =[[UILabel alloc]initWithFrame:CGRectMake(100, 100, 100, 35)];
+    UILabel * detailLabel2 = [[UILabel alloc]initWithFrame:CGRectMake(100, 130, 200, 35)];
+    txtlabel2.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    detailLabel2.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    txtlabel2.text = @"Make a app";
+    detailLabel2.text = @"If one begins with the phenomenology of consciousness one must give an account ";
+    txtlabel2.backgroundColor = [UIColor clearColor];
+    detailLabel2.backgroundColor = [UIColor clearColor];
+    detailLabel2.numberOfLines = 2;
+    [detailLabel2 sizeToFit];
+    
+    txtlabel2.textColor = [UIColor whiteColor];
+    detailLabel2.textColor = [UIColor whiteColor];
+    [back_View2 addSubview:txtlabel2];
+    [back_View2 addSubview:detailLabel2];
+    
+    
+    UILabel *contjoin2 = [[UILabel alloc]initWithFrame:CGRectMake(20, 50+314/2, 150, 44)];
+    contjoin2.text = @"100000Post CV";
+    contjoin2.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:24*0.6];
+    contjoin2.backgroundColor = [UIColor clearColor];
+    contjoin2.textColor = [UIColor whiteColor];
+    [back_View2 addSubview:contjoin2];
+    UILabel* timelabel2 = [[UILabel alloc]initWithFrame:CGRectMake(235, 50, 120, 32)];
+    timelabel2.text = @"2013-09-09";
+    timelabel2.backgroundColor = [UIColor clearColor];
+    timelabel2.textColor = [UIColor whiteColor];
+    timelabel2.font =[UIFont fontWithName:HELVETICANEUE_LIGHT size:18*0.6];
+    
+    [ back_View2 addSubview: timelabel2];
+    ///////////////////////////3  view //////////////////////////////
+    
+    back_View3 = [[UIView alloc]initWithFrame:CGRectMake(0, 262+262, 300, 252)];
+    
+    back_View3.backgroundColor = RGBAlpha(1, 1, 1, 0.3);
+    
+    back_View3.layer.cornerRadius = 5;
+    
+    [scr addSubview:back_View3];
+    
+    UIImageView *bacView3  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    UIImageView *linview3  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50+69, 300, 1)];
+    bacView3.userInteractionEnabled = YES;
+    bacView3 .image = [UIImage imageNamed:@"activity_main_nav"];
+    linview3 .image = [UIImage imageNamed:@"activity_line"];
+    
+    [back_View3 addSubview: bacView3];
+    //[back_View addSubview: linview];
+    
+    //    /////////////////acccess pic ////////////////
+    UIImageView *access_imgv3 = [[UIImageView alloc]initWithFrame:CGRectMake(558/2, 17, 9, 16)];
+    access_imgv3.image = [UIImage imageWithContentsOfFile:FileS(@"activity_right_arrow", @"png")];
+    [bacView3 addSubview:access_imgv3];
+    //
+    
+    UILabel*lab_title3=[[UILabel alloc]initWithFrame:CGRectMake(50, 0, 200, 50)];
+    lab_title3.backgroundColor = [UIColor clearColor];
+    lab_title3.text = @"Job";
+    lab_title3.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:18];
+    lab_title3.textColor = [UIColor whiteColor];
+    [back_View3 addSubview:lab_title3];
+    
+    UIButton *btn_title3 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_title3.frame = CGRectMake(0, 0, 300, 44);
+    [btn_title3 addTarget:self action:@selector(changetxt3) forControlEvents:UIControlEventTouchUpInside];
+    [bacView3 addSubview:btn_title3];
+    
+    UIButton *btn_headtitle3 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_headtitle3.frame = CGRectMake(8, 8, 34, 34);
+    
+    [btn_headtitle3 setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_job_pic", @"png")] forState:UIControlStateNormal];
+    [bacView3 addSubview:btn_headtitle3];
+    
+    
+    UILabel *lab3 = [[UILabel alloc]initWithFrame:CGRectMake(10, 50, 200, 64/2)];
+    
+    lab3.text = @"Most Popular";
+    lab3.backgroundColor = [UIColor clearColor];
+    lab3.textColor = [UIColor whiteColor];
+    [back_View3 addSubview:lab3];
+    
+    
+    /////////////////最热的人的头像image,逗号img////////
+    UIImageView *imgView3      = [[UIImageView alloc]initWithFrame:CGRectMake(10, 82, 34, 34)];
+    UIImageView *yinhao_imgv33  = [[UIImageView alloc]initWithFrame:CGRectMake(64, 82, 10, 11)];
+    UIImageView *fist_line3   = [[UIImageView alloc]initWithFrame:CGRectMake(1, 50+314/2, 298, 1)];
+    UIImageView *yinhao_imgv333 = [[UIImageView alloc]initWithFrame:CGRectMake(560/2, 186, 10, 11)];
+    
+    imgView3.image      = [UIImage imageWithContentsOfFile:FileS(@"acti_small", @"png")];
+    yinhao_imgv33.image  = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_brownyinhao1", @"png")];
+    fist_line3.image    = [UIImage imageWithContentsOfFile:FileS(@"activity_line", @"png")];
+    yinhao_imgv333.image = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_brownyinhao2", @"png")];
+    
+    [back_View3 addSubview:yinhao_imgv333];
+    [back_View3 addSubview:imgView3];
+    [back_View3 addSubview:yinhao_imgv33];
+    [back_View3 addSubview:fist_line3];
+    
+    ///////横线下面的两个按钮////////////
+    
+    for (int a = 0; a<2; a++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(211+44*a, 314/2+50, 44, 44);
+        btn.tag = 30000+a;
+        [btn addTarget:self action:@selector(thirdBtn:) forControlEvents:UIControlEventTouchUpInside];
+        if (a==0) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_postcv", @"png")] forState:UIControlStateNormal];
+        }
+        if (a==1) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_star", @"png")] forState:UIControlStateNormal];
+        }
+        [back_View3 addSubview:btn];
+    }
+    
+    UILabel * txtlabel3 =[[UILabel alloc]initWithFrame:CGRectMake(100, 100, 100, 35)];
+    UILabel * detailLabel3 = [[UILabel alloc]initWithFrame:CGRectMake(100, 130, 200, 35)];
+    txtlabel3.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    detailLabel3.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    txtlabel3.text = @"Chiledhood";
+    detailLabel3.text = @"If one begins with the phenomenology of consciousness one must give an account ";
+    txtlabel3.backgroundColor = [UIColor clearColor];
+    detailLabel3.backgroundColor = [UIColor clearColor];
+    detailLabel3.numberOfLines = 2;
+    [detailLabel3 sizeToFit];
+    
+    txtlabel3.textColor = [UIColor whiteColor];
+    detailLabel3.textColor = [UIColor whiteColor];
+    [back_View3 addSubview:txtlabel3];
+    [back_View3 addSubview:detailLabel3];
+    
+    
+    UILabel *contjoin3 = [[UILabel alloc]initWithFrame:CGRectMake(20, 50+314/2, 150, 44)];
+    contjoin3.text = @"100000Joins";
+    contjoin3.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:24*0.6];
+    contjoin3.backgroundColor = [UIColor clearColor];
+    contjoin3.textColor = [UIColor whiteColor];
+    [back_View3 addSubview:contjoin3];
+    UILabel* timelabel3 = [[UILabel alloc]initWithFrame:CGRectMake(235, 50, 120, 32)];
+    timelabel3.text = @"2013-09-09";
+    timelabel3.backgroundColor = [UIColor clearColor];
+    timelabel3.textColor = [UIColor whiteColor];
+    timelabel3.font =[UIFont fontWithName:HELVETICANEUE_LIGHT size:18*0.6];
+    
+    [ back_View3 addSubview: timelabel3];
+    
+    ///////////////////////////4  view //////////////////////////////
+    
+    back_View4 = [[UIView alloc]initWithFrame:CGRectMake(0, 262+262*2, 300, 252)];
+    
+    back_View4.backgroundColor = RGBAlpha(1, 1, 1, 0.3);
+    
+    back_View4.layer.cornerRadius = 5;
+    
+    [scr addSubview:back_View4];
+    
+    UIImageView *bacView4  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 300, 50)];
+    UIImageView *linview4  = [[UIImageView alloc]initWithFrame:CGRectMake(0, 50+69, 300, 1)];
+    bacView4.userInteractionEnabled = YES;
+    bacView4 .image = [UIImage imageNamed:@"activity_main_nav"];
+    linview4 .image = [UIImage imageNamed:@"activity_line"];
+    
+    [back_View4 addSubview: bacView4];
+    //[back_View addSubview: linview];
+    
+    //    /////////////////acccess pic ////////////////
+    UIImageView *access_imgv4 = [[UIImageView alloc]initWithFrame:CGRectMake(558/2, 17, 9, 16)];
+    access_imgv4.image = [UIImage imageWithContentsOfFile:FileS(@"activity_right_arrow", @"png")];
+    [bacView4 addSubview:access_imgv4];
+    //
+    
+    UILabel*lab_title4=[[UILabel alloc]initWithFrame:CGRectMake(50, 0, 200, 50)];
+    lab_title4.backgroundColor = [UIColor clearColor];
+    lab_title4.text = @"Classified";
+    lab_title4.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:18];
+    lab_title4.textColor = [UIColor whiteColor];
+    [back_View4 addSubview:lab_title4];
+    
+    UIButton *btn_title4 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_title4.frame = CGRectMake(0, 0, 300, 44);
+    [btn_title4 addTarget:self action:@selector(changetxt4) forControlEvents:UIControlEventTouchUpInside];
+    [bacView4 addSubview:btn_title4];
+    
+    UIButton *btn_headtitle4 = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_headtitle4.frame = CGRectMake(8, 8, 34, 34);
+    
+    [btn_headtitle4 setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_classified_pic", @"png")] forState:UIControlStateNormal];
+    [bacView4 addSubview:btn_headtitle4];
+    
+    
+    UILabel *lab4 = [[UILabel alloc]initWithFrame:CGRectMake(10, 50, 200, 64/2)];
+    
+    lab4.text = @"Most Popular";
+    lab4.backgroundColor = [UIColor clearColor];
+    lab4.textColor = [UIColor whiteColor];
+    [back_View4 addSubview:lab4];
+    
+    
+    /////////////////最热的人的头像image,逗号img////////
+    UIImageView *imgView4      = [[UIImageView alloc]initWithFrame:CGRectMake(10, 82, 34, 34)];
+    UIImageView *yinhao_imgv44  = [[UIImageView alloc]initWithFrame:CGRectMake(64, 82, 10, 11)];
+    UIImageView *fist_line4   = [[UIImageView alloc]initWithFrame:CGRectMake(1, 50+314/2, 298, 1)];
+    UIImageView *yinhao_imgv444 = [[UIImageView alloc]initWithFrame:CGRectMake(560/2, 186, 10, 11)];
+    
+    imgView4.image      = [UIImage imageWithContentsOfFile:FileS(@"acti_small", @"png")];
+    yinhao_imgv44.image  = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_puecoloeryinhao1", @"png")];
+    fist_line4.image    = [UIImage imageWithContentsOfFile:FileS(@"activity_line", @"png")];
+    yinhao_imgv444.image = [UIImage imageWithContentsOfFile:FileS(@"activit_idea_puecoloeryinhao2", @"png")];
+    
+    [back_View4 addSubview:yinhao_imgv444];
+    [back_View4 addSubview:imgView4];
+    [back_View4 addSubview:yinhao_imgv44];
+    [back_View4 addSubview:fist_line4];
+    
+    ///////横线下面的两个按钮////////////
+    
+    for (int a = 0; a<2; a++) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame = CGRectMake(211+44*a, 314/2+50, 44, 44);
+        btn.tag = 40000+a;
+        [btn addTarget:self action:@selector(fouthBtn:) forControlEvents:UIControlEventTouchUpInside];
+        if (a==0) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_qipao", @"png")] forState:UIControlStateNormal];
+        }
+        if (a==1) {
+            [btn setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_star", @"png")] forState:UIControlStateNormal];
+        }
+        [back_View4 addSubview:btn];
+    }
+    
+    UILabel * txtlabel4 =[[UILabel alloc]initWithFrame:CGRectMake(100, 100, 100, 35)];
+    UILabel * detailLabel4 = [[UILabel alloc]initWithFrame:CGRectMake(100, 130, 200, 35)];
+    txtlabel4.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    detailLabel4.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:22*0.6];
+    txtlabel4.text = @"Buy bike";
+    detailLabel4.text = @"If one begins with the phenomenology of consciousness one must give an account ";
+    txtlabel4.backgroundColor = [UIColor clearColor];
+    detailLabel4.backgroundColor = [UIColor clearColor];
+    detailLabel4.numberOfLines = 2;
+    [detailLabel4 sizeToFit];
+    
+    txtlabel4.textColor = [UIColor whiteColor];
+    detailLabel4.textColor = [UIColor whiteColor];
+    [back_View4 addSubview:txtlabel4];
+    [back_View4 addSubview:detailLabel4];
+    
+    
+    UILabel *contjoin4 = [[UILabel alloc]initWithFrame:CGRectMake(20, 50+314/2, 150, 44)];
+    contjoin4.text = @"100000Joins";
+    contjoin4.font = [UIFont fontWithName:HELVETICANEUE_LIGHT size:24*0.6];
+    contjoin4.backgroundColor = [UIColor clearColor];
+    contjoin4.textColor = [UIColor whiteColor];
+    [back_View4 addSubview:contjoin4];
+    
+    
+    UILabel* timelabel4 = [[UILabel alloc]initWithFrame:CGRectMake(235, 50, 120, 32)];
+    timelabel4.text = @"2013-09-09";
+    timelabel4.backgroundColor = [UIColor clearColor];
+    timelabel4.textColor = [UIColor whiteColor];
+    timelabel4.font =[UIFont fontWithName:HELVETICANEUE_LIGHT size:18*0.6];
+    
+    [ back_View4 addSubview: timelabel4];
+    
+}
+/////////横线线面的btn、、、、、、、、
+-(void)firstBtn:(UIButton*)sender
+{
+    
+    if (sender.tag-10000==0)
+    {
+        NSLog(@"1234567890");
+    }
+    if (sender.tag-10000==1) {
+        [(UIButton*)[back_View viewWithTag:10001] setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_yellowstar", @"png")] forState:UIControlStateNormal];
+    }
+    
+}
+
+-(void)secondBtn:(UIButton*)sender
+{
+    
+    if (sender.tag-20000==0)
+    {
+        NSLog(@"1");
+    }
+    if (sender.tag-20000==1)
+    {NSLog(@"2");
+        [(UIButton*)[back_View2 viewWithTag:20001] setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_yellowstar", @"png")] forState:UIControlStateNormal];
+    }
+    
+}
+-(void)thirdBtn:(UIButton*)sender
+{
+    
+    if (sender.tag-30000==0)
+    {
+        NSLog(@"3");
+    }
+    if (sender.tag-30000==1)
+    {NSLog(@"4");
+        [(UIButton*)[back_View3 viewWithTag:30001] setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_yellowstar", @"png")] forState:UIControlStateNormal];
+    }
+    
+}
+-(void)fouthBtn:(UIButton*)sender
+{
+    
+    if (sender.tag-40000==0)
+    {NSLog(@"5");
+        
+    }
+    if (sender.tag-40000==1)
+    {NSLog(@"6");
+        [(UIButton*)[back_View4 viewWithTag:40001] setBackgroundImage:[UIImage imageWithContentsOfFile:FileS(@"activity_yellowstar", @"png")] forState:UIControlStateNormal];
+    }
+    
+}
+
+/////////////每个view的btn/////////////
+-(void)changetxt
+{
+    ActivityIdeaViewController*ac=[[ActivityIdeaViewController alloc]init];
+    [self.navigationController pushViewController:ac animated:YES];
+    NSLog(@"1");
+    
+}
+-(void)changetxt2
+{
+    ActivityProjectfirstViewController*ac=[[ActivityProjectfirstViewController alloc]init];
+    [self.navigationController pushViewController:ac animated:YES];
+    
+    NSLog(@"2");
+}
+-(void)changetxt3
+{
+    
+    NSLog(@"3");
+    ActivityJobViewController*ac=[[ActivityJobViewController alloc]init];
+    [self.navigationController pushViewController:ac animated:YES];
+    
+    
+}
+-(void)changetxt4
+{
+    
+    NSLog(@"4");
+    ActivityClassifiedViewController*ac=[[ActivityClassifiedViewController alloc]init];
+    [self.navigationController pushViewController:ac animated:YES];
 }
 
 # pragma mark -NavgationCotroller Delegate
@@ -143,8 +718,9 @@
     [self setNavgationBar];
     self.navigationItem.title = @"DWin";
     // 背景图
-    UIImageView *imageViewBackGround = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kScreen_Width, kScreen_Height)];
+   imageViewBackGround = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kScreen_Width, kScreen_Height)];
     imageViewBackGround.image = [UIImage imageNamed:@"friendlistbg1"];
+    imageViewBackGround.userInteractionEnabled = YES;
     [self.view addSubview:imageViewBackGround];
     // 设置高度
     getViewHeight = 0;
@@ -245,6 +821,7 @@
     switch (sender.tag) {
         case 1:
         {
+            //[_mTableView setHidden:NO];
             [UIView animateWithDuration:0.2 animations:^{
                 whiteBlock.frame = CGRectMake(10, 9, 100, 30);
             }];
@@ -256,11 +833,13 @@
                 [self setTableView];
                 _mTableView.frame = CGRectMake(0, _mTableView.frame.origin.y,kScreen_Width ,kScreen_Height) ;
                 [_mapView removeFromSuperview];
+                [scr removeFromSuperview];
                
             }else
             {
                 _mTableView.frame = CGRectMake(0, _mTableView.frame.origin.y, kScreen_Width, kScreen_Height);
                 [_mapView removeFromSuperview];
+                [scr removeFromSuperview];
                 [self.view addSubview:_mTableView];
             }
         }
@@ -275,6 +854,16 @@
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activityselected"] forState:UIControlStateNormal];
             [btn_map setBackgroundImage:[UIImage imageNamed:@"friendlist_map"] forState:UIControlStateNormal];
             [controlView removeFromSuperview];
+            [_mTableView removeFromSuperview];
+            [_mapView removeFromSuperview];
+            if (scr==nil) {
+                [self setactivity];
+            }
+            else
+            {
+                [self.view addSubview:scr];
+            }
+            //[_mTableView setHidden:YES];
         }
             break;
         case 3:
@@ -289,13 +878,14 @@
                 _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView))];
                 _mapView.showsUserLocation = YES;
                 _mapView.delegate = self;
-               
+               [scr removeFromSuperview];
                 [_mTableView removeFromSuperview];
                 [self.view addSubview:_mapView];
             }else
             {
                 _mapView.frame = CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView));
                 [_mTableView removeFromSuperview];
+                [scr removeFromSuperview];
                 [self.view addSubview:_mapView];
             }
         }
@@ -318,7 +908,7 @@
     [UIView animateWithDuration:0.5 animations:^{
         userInfoView.frame = CGRectMake(0, kTabAlreadyUpUserViewY, kScreen_Width, 130);
         _mTableView.frame = CGRectMake(0, kScrollAlreadyUp, kScreen_Width, kScreen_Height);
-        
+         scr.frame=CGRectMake(10, 60, kScreen_Width, kScreen_Height);
     }];
 }
 
@@ -343,7 +933,7 @@
         [UIView animateWithDuration:0.5 animations:^{
             userInfoView.frame = CGRectMake(0, kTabAlreadyDownUserViewY, kScreen_Width, 130);
             _mTableView.frame = CGRectMake(0, kScrollAlreadyDown, kScreen_Width, kScreen_Height);
-
+scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
         }];
     }
 }
@@ -477,7 +1067,12 @@
             break;
         }
         case 1001:
-            
+        {
+            ActivityViewController *text = [[ActivityViewController alloc] init];
+            //text.controlImageType = 6;
+            [self.navigationController pushViewController:text animated:YES];
+            break;
+        }
             break;
         case 1002:
             
