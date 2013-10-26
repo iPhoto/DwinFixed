@@ -103,7 +103,7 @@
     
     buttonItem0.superview.backgroundColor = [UIColor yellowColor];
     buttonItem0.superview.superview.backgroundColor = [UIColor grayColor];
-    
+    //buttonItem0.headImageView.image = vo.image;
     buttonItem0.labelTitle_Main.text = vo.strTitle;
     buttonItem0.labelTitle_Main.textColor = [Utils getColorByTag:self.tag];
    
@@ -291,7 +291,16 @@
     for (int i =0; i<_itemsNum; i++) {
         ItemView *item = [_itemsAry objectAtIndex:i];
         if (i!=0) {
-            item.labelBottom.text = [NSString stringWithFormat:@"Child%d",i];
+            //item.labelBottom.text = [NSString stringWithFormat:@"Child%d",i];
+            if (i==1) {
+                item.childItemImageView.image = [UIImage imageNamed:@"write"];
+            }
+            if (i==2) {
+                item.childItemImageView.image = [UIImage imageNamed:@"star"];
+            }
+            if (i==3) {
+                item.childItemImageView.image = [UIImage imageNamed:@"repost"];
+            }
              [Utils dealViewRoundCorners:item.button radius:CGRectGetHeight(item.button.bounds)/2 borderWidth:2.];//切成圆
 
         }

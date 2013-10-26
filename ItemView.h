@@ -13,7 +13,7 @@
 */
 
 #import <UIKit/UIKit.h>
-#import "Utils.h"
+
 typedef enum {
     ItemButtonType_Main = 0,
     ItemButtonType_Left,
@@ -26,6 +26,7 @@ typedef void (^ClickItemViewBlock)(id btn);
 @interface ItemView : UIView
 @property(nonatomic,strong) UIButton *button;
 @property(nonatomic,strong) UILabel *labelBottom;
+@property (nonatomic,retain) UILabel *labelDetails;
 @property(nonatomic,strong) UILabel *labelTitle_Main;
 
 
@@ -38,6 +39,8 @@ typedef void (^ClickItemViewBlock)(id btn);
 @property(nonatomic,assign) CGPoint farCenter;
 
 @property (nonatomic,strong)ClickItemViewBlock    blockButton;
-
+// add head image and details
+@property (nonatomic,retain) UIImageView *headImageView;
+@property (nonatomic,retain) UIImageView *childItemImageView;
 - (id)initWithFrame:(CGRect)frame buttonFrame:(CGRect)frameBtn lineStart:(CGPoint)p1 lineEnd:(CGPoint)p2 block:(ClickItemViewBlock)aBlock;
 @end

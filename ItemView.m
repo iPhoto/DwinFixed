@@ -36,22 +36,40 @@
         if (CGRectGetHeight(frame)==260) {
             
             self.labelBottom.hidden = YES;
-            self.labelTitle_Main = [[UILabel alloc]initWithFrame:CGRectMake(0, CGRectGetHeight(self.button.bounds)/2.+10., CGRectGetWidth(self.button.bounds)-40., 20.)];
+            self.labelTitle_Main = [[UILabel alloc]initWithFrame:CGRectMake(0, 35, CGRectGetWidth(self.button.bounds)-40., 20.)];
 
-            self.labelTitle_Main.center  = CGPointMake(CGRectGetWidth(self.button.bounds)/2., CGRectGetHeight(self.button.bounds)/2.);//center1;
+            self.labelTitle_Main.center  = CGPointMake(CGRectGetWidth(self.button.bounds)/2., 40);//center1;
             self.labelTitle_Main.textColor = [Utils getColorByTag:self.tag];
             self.labelTitle_Main.textAlignment = NSTextAlignmentCenter;
-            self.labelTitle_Main.font = [UIFont boldSystemFontOfSize:15.];
+            self.labelTitle_Main.font = [UIFont boldSystemFontOfSize:12.];
 
             self.labelTitle_Main.backgroundColor = [UIColor clearColor];
             [self.button addSubview:self.labelTitle_Main];
+            // 添加头像
+            self.headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 25, 25)];
+            self.headImageView.center = CGPointMake(CGRectGetWidth(self.button.bounds)/2., 20);
+            self.headImageView.image = [UIImage imageNamed:@"3.jpg"];
+            [self.button addSubview:self.headImageView];
+            // 添加details
+            self.labelDetails = [[UILabel alloc] initWithFrame:CGRectMake(5, 45, CGRectGetWidth(self.button.bounds)-10, 100)];
+            [_labelDetails setNumberOfLines:0];
+            _labelDetails.lineBreakMode = NSLineBreakByWordWrapping;
+            // 测试字串
+           NSString *s = @"这是一个测试！！！adsfsaf时发生发勿忘我勿忘我勿忘我勿忘我勿忘我阿阿阿阿阿阿阿阿阿阿阿阿阿啊00000000阿什顿。。。这是一个测试！！！adsfsaf时发生发勿忘我勿忘我勿忘我勿忘我勿忘我阿阿阿阿阿阿阿阿阿阿阿阿阿啊00000000阿什顿。。这是一个测试！！！adsfsaf时发生发勿忘我勿忘我勿忘我勿忘我勿忘我阿阿阿阿阿阿阿阿阿阿阿阿阿啊00000000阿什顿。。";
+            UIFont *font = [UIFont systemFontOfSize:8];
+            _labelDetails.font = font;
+            _labelDetails.backgroundColor = [UIColor clearColor];
             
+            //_labelDetails.frame = CGRectMake(0, 40, labelsize.width, labelsize.height);
+            _labelDetails.text = s;
+            [self.button addSubview:_labelDetails];
+
         }
         else
         {
 
             self.labelBottom = [[UILabel alloc]init];
-            CGRect labelFrame = CGRectMake(0, 0, CGRectGetWidth(frameBtn), 14);//
+            CGRect labelFrame = CGRectMake(0, 0, CGRectGetWidth(frameBtn), CGRectGetWidth(frameBtn));//
             self.labelBottom.frame = labelFrame;
            self.labelBottom.center  = CGPointMake(CGRectGetWidth(self.button.bounds)/2., CGRectGetHeight(self.button.bounds)/2.);
             self.labelBottom.textAlignment = NSTextAlignmentCenter;
@@ -60,6 +78,11 @@
 
             self.labelBottom.backgroundColor = [UIColor clearColor];
             [self.button addSubview:self.labelBottom];
+            // 添加图片
+            self.childItemImageView = [[UIImageView alloc] init];
+            self.childItemImageView.frame = CGRectMake(0, 0, 44, 44);
+            self.childItemImageView.center = CGPointMake(CGRectGetWidth(self.button.bounds)/2., CGRectGetHeight(self.button.bounds)/2.);
+            [self.button addSubview:self.childItemImageView];
         }
 
     }
