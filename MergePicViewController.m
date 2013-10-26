@@ -10,7 +10,7 @@
 
 
 @interface MergePicViewController ()
-
+@property (nonatomic,retain) NSMutableArray *btnArray;
 @end
 
 @implementation MergePicViewController
@@ -59,6 +59,7 @@
 -(void) initView
 {
     [self setNavgationBar];
+    _btnArray = [[NSMutableArray alloc] initWithCapacity:0];
     _arr_items = [[NSMutableArray alloc] initWithCapacity:0];
     // 背景图
     UIImageView *imageViewBackGround = [[UIImageView alloc] initWithFrame:CGRectMake(0, -64, kScreen_Width, kScreen_Height)];
@@ -85,6 +86,7 @@
         btn.frame = CGRectMake(14*(i+1)+44*i+75, kContent_Height-44-69, 44, 64);
         [btn setBackgroundImage:[UIImage imageNamed:@"mergevideo_loadvideo"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(ChooseVideo:) forControlEvents:UIControlEventTouchUpInside];
+        [_btnArray addObject:btn];
         [self.view addSubview:btn];
     }
     // playview bg
@@ -257,6 +259,15 @@
                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
             firstAsset = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+            NSLog(@"%@",[info objectForKey:UIImagePickerControllerMediaURL]);
+            AVAssetImageGenerator *assetImage = [[AVAssetImageGenerator alloc] initWithAsset:firstAsset];
+            CGImageRef cgImg = [assetImage copyCGImageAtTime:CMTimeMake(10, 10) actualTime:NULL error:nil];
+            UIImage *image = [UIImage imageWithCGImage:cgImg];
+            if (image !=nil) {
+                NSLog(@"not nil");
+            }
+            UIButton *btn = [_btnArray objectAtIndex:0];
+            [btn setBackgroundImage:image forState:UIControlStateNormal];
             [_arr_items addObject:firstAsset];
             isSelectingAssetOne = NO;
             isSelectingAssetTwo = YES;
@@ -268,6 +279,14 @@
                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
             secondAsset = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+            AVAssetImageGenerator *assetImage = [[AVAssetImageGenerator alloc] initWithAsset:firstAsset];
+            CGImageRef cgImg = [assetImage copyCGImageAtTime:CMTimeMake(10, 10) actualTime:NULL error:nil];
+            UIImage *image = [UIImage imageWithCGImage:cgImg];
+            if (image !=nil) {
+                NSLog(@"not nil");
+            }
+            UIButton *btn = [_btnArray objectAtIndex:1];
+            [btn setBackgroundImage:image forState:UIControlStateNormal];
             isSelectingAssetTwo= NO;
             isSelectingAssetThree = YES;
             [_arr_items addObject:secondAsset];
@@ -280,6 +299,14 @@
                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
             threeAsset = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+            AVAssetImageGenerator *assetImage = [[AVAssetImageGenerator alloc] initWithAsset:firstAsset];
+            CGImageRef cgImg = [assetImage copyCGImageAtTime:CMTimeMake(10, 10) actualTime:NULL error:nil];
+            UIImage *image = [UIImage imageWithCGImage:cgImg];
+            if (image !=nil) {
+                NSLog(@"not nil");
+            }
+            UIButton *btn = [_btnArray objectAtIndex:2];
+            [btn setBackgroundImage:image forState:UIControlStateNormal];
             [_arr_items addObject:threeAsset];
             isSelectingAssetThree = NO;
             isSelectingAssetFour = YES;
@@ -291,6 +318,14 @@
                                                            delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
             fourthAsset = [AVAsset assetWithURL:[info objectForKey:UIImagePickerControllerMediaURL]];
+            AVAssetImageGenerator *assetImage = [[AVAssetImageGenerator alloc] initWithAsset:firstAsset];
+            CGImageRef cgImg = [assetImage copyCGImageAtTime:CMTimeMake(10, 10) actualTime:NULL error:nil];
+            UIImage *image = [UIImage imageWithCGImage:cgImg];
+            if (image !=nil) {
+                NSLog(@"not nil");
+            }
+            UIButton *btn = [_btnArray objectAtIndex:3];
+            [btn setBackgroundImage:image forState:UIControlStateNormal];
             [_arr_items addObject:fourthAsset];
             isSelectingAssetFour = NO;
         }

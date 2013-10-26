@@ -9,7 +9,8 @@
 #import "ImageFilterViewController.h"
 
 @interface ImageFilterViewController ()
-
+@property (nonatomic,retain) UIImageView *imageView;
+@property (nonatomic,retain) UIImageView *moveImageView;
 @end
 
 @implementation ImageFilterViewController
@@ -21,6 +22,12 @@
         // Custom initialization
     }
     return self;
+}
+
+- (void)setupView
+{
+    _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, kContent_Width, 426.6)];
+    
 }
 
 - (void)viewDidLoad

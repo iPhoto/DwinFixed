@@ -99,9 +99,9 @@
                                                           [self clickButton:(ItemView *)btn];
                                                       }];
     
-    [Utils dealViewRoundCorners:buttonItem0.button radius:CGRectGetHeight(buttonItem0.button.bounds)/2 borderWidth:2.];
+    [Utils dealViewRoundCorners:buttonItem0.button radius:CGRectGetHeight(buttonItem0.button.bounds)/2 borderWidth:0.];
     
-    buttonItem0.superview.backgroundColor = [UIColor yellowColor];
+    buttonItem0.superview.backgroundColor = [UIColor whiteColor];
     buttonItem0.superview.superview.backgroundColor = [UIColor grayColor];
     //buttonItem0.headImageView.image = vo.image;
     buttonItem0.labelTitle_Main.text = vo.strTitle;
@@ -293,13 +293,13 @@
         if (i!=0) {
             //item.labelBottom.text = [NSString stringWithFormat:@"Child%d",i];
             if (i==1) {
-                item.childItemImageView.image = [UIImage imageNamed:@"write"];
+                item.childItemImageView.image = [UIImage imageNamed:@"mapview_write"];
             }
             if (i==2) {
-                item.childItemImageView.image = [UIImage imageNamed:@"star"];
+                item.childItemImageView.image = [UIImage imageNamed:@"mapview_star"];
             }
             if (i==3) {
-                item.childItemImageView.image = [UIImage imageNamed:@"repost"];
+                item.childItemImageView.image = [UIImage imageNamed:@"mapview_repost"];
             }
              [Utils dealViewRoundCorners:item.button radius:CGRectGetHeight(item.button.bounds)/2 borderWidth:2.];//切成圆
 

@@ -455,14 +455,14 @@ enum
         
         if (flag==2) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_heibai];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
         }
         if (flag==3) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_huajiu];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -470,14 +470,14 @@ enum
         }
         if (flag==4) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_gete];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
         }
         if (flag==5) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_ruise];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -485,7 +485,7 @@ enum
         }
         if (flag==6) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_danya];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -493,7 +493,7 @@ enum
         }
         if (flag==7) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_jiuhong];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -501,14 +501,14 @@ enum
         }
         if (flag==8) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_qingning];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
         }
         if (flag==9) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_langman];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -516,7 +516,7 @@ enum
         }
         if (flag==10) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_guangyun];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -524,7 +524,7 @@ enum
         }
         if (flag==11) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_landiao];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -532,7 +532,7 @@ enum
         }
         if (flag==12) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_menghuan];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;
@@ -540,7 +540,7 @@ enum
         }
         if (flag==13) {
             UIImage*ima=
-            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_lomo];
+            [ImageUtil imageWithImage:contentView.image withColorMatrix:colormatrix_yese];
             UIImage *image1 = [self addImage:wholeImage withPoint1:CGPointMake(0, 0) toImage:ima withPoint2:CGPointMake(btnImage.frame.origin.x, btnImage.frame.origin.y)];
             imageViewShowEffect.image = image1;
             btnImage.image=ima;

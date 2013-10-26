@@ -102,7 +102,7 @@
     CGContextSetLineWidth(context,1.);
     CGContextMoveToPoint(context, self.lineStartP.x, self.lineStartP.y);//起点
     CGContextAddLineToPoint(context, self.lineEndP.x, self.lineEndP.y);//终点
-   CGContextSetStrokeColorWithColor(context, [UIColor purpleColor].CGColor);//设置线的颜色
+   CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);//设置线的颜色
     CGContextStrokePath(context);
     
    

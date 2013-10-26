@@ -10,9 +10,16 @@
 
 @interface ActivityClassifiedDetailViewController : UIViewController<UITextFieldDelegate>
 {
-    UITextField *lab_title2;
+    UILabel *lab_title2;
     UITextField * Partner;
     UITextField * topic;
+  
+   
+    UIView * back_View2,*back_View3;
+    BOOL flagUp;
+    BOOL flaglock;
+    UIScrollView*  scr;
+    BOOL flagUp3;
 
 }
 @end

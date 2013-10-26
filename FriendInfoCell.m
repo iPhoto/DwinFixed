@@ -25,6 +25,7 @@ static int i=0;
         friendView.backgroundColor =RGBAlpha(1, 1, 1, 0.3);
         
         [self addSubview:friendView];
+        
         // 标题视图
         UIView *friendTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, friendView.frame.size.width, 44)];
         friendTitleView.backgroundColor = RGBAlpha(0, 0, 0, 0.3);
@@ -51,7 +52,7 @@ static int i=0;
         
         [friendTitleView addSubview:_frienName2];
         // 地址图标
-        UIImageView *imageLocation = [[UIImageView alloc] initWithFrame:CGRectMake(_frienName2.frame.origin.x+_frienName2.frame.size.width, 8, 8, 14)];
+        UIImageView *imageLocation = [[UIImageView alloc] initWithFrame:CGRectMake(_frienName2.frame.origin.x+_frienName2.frame.size.width, 12, 8, 9)];
         imageLocation.image = [UIImage imageNamed:@"friendlist_location"];
         [friendTitleView addSubview:imageLocation];
         // 地址信息

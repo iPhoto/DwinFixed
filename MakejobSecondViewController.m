@@ -357,35 +357,37 @@
         [[back_View2 viewWithTag:401] setHidden:YES];
         [[back_View2 viewWithTag:402] setHidden:YES];
         [[back_View2 viewWithTag:403] setHidden:YES];
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             back_View2.frame = CGRectMake(10, 30+44+69+76+10, 300, 44);
             back_View3.frame = CGRectMake(10, 30+44+69+76+10+10+back_View2.frame.size.height, 300, 44+69+76);
         }];
         flagUp=YES;
     }
     else{
-        [[back_View2 viewWithTag:100] setHidden:NO];
-        [[back_View2 viewWithTag:101] setHidden:NO];
-        [[back_View2 viewWithTag:102] setHidden:NO];
-        [[back_View2 viewWithTag:103] setHidden:NO];
-        [[back_View2 viewWithTag:200] setHidden:NO];
-        [[back_View2 viewWithTag:201] setHidden:NO];
-        [[back_View2 viewWithTag:202] setHidden:NO];
-        [[back_View2 viewWithTag:203] setHidden:NO];
-        [[back_View2 viewWithTag:300] setHidden:NO];
-        [[back_View2 viewWithTag:301] setHidden:NO];
-        [[back_View2 viewWithTag:302] setHidden:NO];
-        [[back_View2 viewWithTag:303] setHidden:NO];
-        [[back_View2 viewWithTag:400] setHidden:NO];
-        [[back_View2 viewWithTag:401] setHidden:NO];
-        [[back_View2 viewWithTag:402] setHidden:NO];
-        [[back_View2 viewWithTag:403] setHidden:NO];
         [UIView animateWithDuration:0.5 animations:^{
             back_View2.frame = CGRectMake(10, 30+44+69+76+10, 300, 44+69+76);
+        } completion:^(BOOL finished) {
+            [[back_View2 viewWithTag:100] setHidden:NO];
+            [[back_View2 viewWithTag:101] setHidden:NO];
+            [[back_View2 viewWithTag:102] setHidden:NO];
+            [[back_View2 viewWithTag:103] setHidden:NO];
+            [[back_View2 viewWithTag:200] setHidden:NO];
+            [[back_View2 viewWithTag:201] setHidden:NO];
+            [[back_View2 viewWithTag:202] setHidden:NO];
+            [[back_View2 viewWithTag:203] setHidden:NO];
+            [[back_View2 viewWithTag:300] setHidden:NO];
+            [[back_View2 viewWithTag:301] setHidden:NO];
+            [[back_View2 viewWithTag:302] setHidden:NO];
+            [[back_View2 viewWithTag:303] setHidden:NO];
+            [[back_View2 viewWithTag:400] setHidden:NO];
+            [[back_View2 viewWithTag:401] setHidden:NO];
+            [[back_View2 viewWithTag:402] setHidden:NO];
+            [[back_View2 viewWithTag:403] setHidden:NO];
+
         }];
         flagUp= NO;
         back_View3.frame = CGRectMake(10, 30+44+69+76+10+44+69+76+10, 300, 44+69+76);
-        
+         
     }
     
     

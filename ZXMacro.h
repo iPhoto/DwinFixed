@@ -47,6 +47,15 @@
 // compiling without ARC
 #endif
 
+
+#define CLASSIFIEDKIND @"classified"
+#define  IDEAKIND @"idea"
+#define  JOBKIND  @"job"
+#define MOMENTKIND @"moment"
+#define PROJECTKIND @"project"
+#define SHOPPINGKIND @"shopping"
+
+#define WARDROBEKIND @"wardrobe"
 //Block
 typedef void(^VoidBlock)();
 typedef BOOL(^BoolBlock)();

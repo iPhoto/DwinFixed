@@ -16,7 +16,9 @@
 #import "AGIPCGridItem.h"
 
 @interface AGIPCAssetsController : UITableViewController<UITableViewDataSource, UITableViewDelegate, AGIPCGridItemDelegate>
-
+{
+    int flag;
+}
 @property (strong) ALAssetsGroup *assetsGroup;
 @property (ag_weak, readonly) NSArray *selectedAssets;
 @property (strong) AGImagePickerController *imagePickerController;

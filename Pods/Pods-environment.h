@@ -36,23 +36,29 @@
 #define COCOAPODS_VERSION_MINOR_ASIHTTPRequest_S3 8
 #define COCOAPODS_VERSION_PATCH_ASIHTTPRequest_S3 1
 
-// GPUImage
-#define COCOAPODS_POD_AVAILABLE_GPUImage
-#define COCOAPODS_VERSION_MAJOR_GPUImage 0
-#define COCOAPODS_VERSION_MINOR_GPUImage 1
-#define COCOAPODS_VERSION_PATCH_GPUImage 0
-
-// Google-Maps-iOS-SDK
-#define COCOAPODS_POD_AVAILABLE_Google_Maps_iOS_SDK
-#define COCOAPODS_VERSION_MAJOR_Google_Maps_iOS_SDK 1
-#define COCOAPODS_VERSION_MINOR_Google_Maps_iOS_SDK 5
-#define COCOAPODS_VERSION_PATCH_Google_Maps_iOS_SDK 0
+// FontAwesome+iOS
+#define COCOAPODS_POD_AVAILABLE_FontAwesome_iOS
+#define COCOAPODS_VERSION_MAJOR_FontAwesome_iOS 0
+#define COCOAPODS_VERSION_MINOR_FontAwesome_iOS 1
+#define COCOAPODS_VERSION_PATCH_FontAwesome_iOS 1
 
 // PICircularProgressView
 #define COCOAPODS_POD_AVAILABLE_PICircularProgressView
 #define COCOAPODS_VERSION_MAJOR_PICircularProgressView 0
 #define COCOAPODS_VERSION_MINOR_PICircularProgressView 1
 #define COCOAPODS_VERSION_PATCH_PICircularProgressView 1
+
+// PPiAwesomeButton
+#define COCOAPODS_POD_AVAILABLE_PPiAwesomeButton
+#define COCOAPODS_VERSION_MAJOR_PPiAwesomeButton 1
+#define COCOAPODS_VERSION_MINOR_PPiAwesomeButton 2
+#define COCOAPODS_VERSION_PATCH_PPiAwesomeButton 8
+
+// PPiFlatSegmentedControl
+#define COCOAPODS_POD_AVAILABLE_PPiFlatSegmentedControl
+#define COCOAPODS_VERSION_MAJOR_PPiFlatSegmentedControl 1
+#define COCOAPODS_VERSION_MINOR_PPiFlatSegmentedControl 3
+#define COCOAPODS_VERSION_PATCH_PPiFlatSegmentedControl 3
 
 // Reachability
 #define COCOAPODS_POD_AVAILABLE_Reachability

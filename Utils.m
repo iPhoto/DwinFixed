@@ -79,7 +79,7 @@ float calculateRotateDegree(CGPoint p1,CGPoint p0)
     [aView.layer setMasksToBounds:YES];
     [aView.layer setCornerRadius:aRadius];
     if (aWidth>0) {
-        aView.layer.borderColor = [[UIColor blackColor] CGColor];
+        aView.layer.borderColor = [[UIColor clearColor] CGColor];
         aView.layer.borderWidth = aWidth;
         aView.backgroundColor=[UIColor whiteColor];
 

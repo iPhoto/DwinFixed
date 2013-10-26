@@ -26,9 +26,9 @@
         self.backgroundColor = [UIColor clearColor];
         self.canShowCallout = NO;
 //        self.centerOffset = CGPointMake(0, -15);
-        self.frame = CGRectMake(0, 0, 30, 30);
+        self.frame = CGRectMake(0, 0, 34, 54);
         
-        self.imgView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"dot.png"]];
+        self.imgView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"mapview_tagjob"]];
         self.imgView.frame = self.bounds;
         [self addSubview:self.imgView];
         

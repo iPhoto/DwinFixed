@@ -212,15 +212,28 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     // Reset the number of selections
+    NSLog(@"flag   kkkk");
     [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseFunction) name:@"gif1" object:nil];
+    NSString *str = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"GIF"];
+    if (str != nil) {
+        flag=1;
+    }
     [super viewWillAppear:animated];
+    
+}
+
+- (void)chooseFunction
+{
+    NSLog(@"get notification");
+    flag=1;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+   // flag=1;
+    NSLog(@"flag = %d",flag);
     // Fullscreen
     if (self.imagePickerController.shouldChangeStatusBarStyle) {
         self.wantsFullScreenLayout = YES;
@@ -228,11 +241,37 @@
     
     // Setup Notifications
     [self registerForNotifications];
+    // 导航条左按钮
+    UIButton *btn_left = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_left.frame = CGRectMake(0, 0, 56, 18);
+    // [btn_left setBackgroundImage:[UIImage imageNamed:@"friendlist_nav_leftbar"] forState:UIControlStateNormal];
     
+    UIImage * image = [UIImage imageNamed:@"textedit_leftnavbar"];
+    [btn_left setBackgroundImage:image forState:UIControlStateNormal];
+    //btn_left.tag=1;
+    [btn_left addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:btn_left];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    // 导航条右按钮
+    UIButton *btn_right = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_right.frame = CGRectMake(0, 0, 46, 44);
+    // [btn_left setBackgroundImage:[UIImage imageNamed:@"friendlist_nav_leftbar"] forState:UIControlStateNormal];
+    
+    UIImage * image2 = [UIImage imageNamed:@"done"];
+    [btn_right setBackgroundImage:image2 forState:UIControlStateNormal];
+    //btn_left.tag=1;
+    if (flag==1) {
+        [btn_right addTarget:self action:@selector(doneAction2:) forControlEvents:UIControlEventTouchUpInside];
+    }else
+    {
+        [btn_right addTarget:self action:@selector(doneAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    UIBarButtonItem *rightBar = [[UIBarButtonItem alloc] initWithCustomView:btn_right];
+  
     // Navigation Bar Items
     UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
     doneButtonItem.enabled = NO;
-	self.navigationItem.rightBarButtonItem = doneButtonItem;
+	self.navigationItem.rightBarButtonItem = rightBar;
 }
 
 - (void)viewDidUnload
@@ -241,6 +280,11 @@
     
     // Destroy Notifications
     [self unregisterFromNotifications];
+}
+
+- (void)cancelAction:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - Private
@@ -332,6 +376,18 @@
 
 - (void)doneAction:(id)sender
 {
+    
+    
+    
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"fanhui" object:self userInfo:nil ];
+    
+   
+    [self.imagePickerController performSelector:@selector(didFinishPickingAssets:) withObject:self.selectedAssets];
+}
+
+- (void)doneAction2:(NSNotification *)sender
+{
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"makegifpost" object:self userInfo:nil ];
     [self.imagePickerController performSelector:@selector(didFinishPickingAssets:) withObject:self.selectedAssets];
 }
 

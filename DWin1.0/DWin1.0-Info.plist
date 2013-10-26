@@ -12,7 +12,7 @@
 	<string>com.ccm.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>icon</string>
+		<string>icon@2x</string>
 	</array>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>

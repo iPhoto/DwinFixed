@@ -15,6 +15,7 @@
 #define kScrollAlreadyUp 50
 #define kScrollAlreadyDown 130
 #import "ActivityProjectfirstCell.h"
+#import "ActvityProjectDetailViewController.h"
 @interface ActivityProjectfirstViewController ()
 
 @end
@@ -106,8 +107,8 @@
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    
+    ActvityProjectDetailViewController   *bs=[[ActvityProjectDetailViewController alloc]init];
+    [self.navigationController pushViewController:bs animated:YES];
 }
 
 

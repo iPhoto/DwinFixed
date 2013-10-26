@@ -45,6 +45,7 @@
     NSMutableArray *getAudioArrayFromMerge;
     NSMutableArray *getPictureFromMerge;
      NSMutableArray *getTextFromMerge;
+   
     //
     UIView *secondAudioview;
     UIView *secondTextView;

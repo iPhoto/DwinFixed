@@ -13,6 +13,7 @@
 #import "ActivityProjrctViewController.h"
 #import "MakeIdeaViewController.h"
 #import "MakejobViewController.h"
+#import "MakeClassfiedViewController.h"
 @interface ActivityViewController ()
 
 @end
@@ -200,6 +201,8 @@
     }
     if (sender.tag-300==3) {
         NSLog(@"4");
+        MakeClassfiedViewController *make = [[MakeClassfiedViewController alloc]init];
+        [self.navigationController pushViewController:make animated:YES];
     }
 
 

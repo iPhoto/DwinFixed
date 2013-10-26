@@ -9,7 +9,7 @@
 #import "TestViewController.h"
 #import "GetStaticImage.h"
 #import "DRNRealTimeBlurView.h"
-#import "GoogleMaps.h"
+
 #import "ZXMacro.h"
 #import "ImageUtil.h"
 

@@ -40,7 +40,17 @@
     PinAnnotation       *_pinAnnotation;
     DetailsAnnotation   *_detailsAnnotation;
     NSMutableArray      *_detailsAnnoArray;
+    CAShapeLayer *circle;
+    UIImageView *imageview;
+    // PulseView *pulseview ;
+
+    float finalHypotenuse;
+    float finalAngle;
+    UIBezierPath *finalpath;
+    CLLocationCoordinate2D coordinate2;
+    CAShapeLayer*arclayer;
 }
+@property (nonatomic,assign) CGPoint pointcenter;
 @end
 
 @implementation FriendListViewController
@@ -58,7 +68,7 @@
     
     
     scr = [[UIScrollView alloc]initWithFrame:CGRectMake(10, 60, 300, 500)];
-    scr.backgroundColor = [UIColor whiteColor];
+  
     scr.indicatorStyle=UIScrollViewIndicatorStyleWhite;
     scr.backgroundColor = [UIColor clearColor];
     scr.contentSize = CGSizeMake(300, 1444);
@@ -778,6 +788,7 @@
     // 白色方块
     whiteBlock = [[UIImageView alloc] initWithFrame:CGRectMake(10, 9, 100, 30)];
     whiteBlock.image = [UIImage imageNamed:@"friendlist_whiteblock"];
+    whiteBlock.hidden = YES;
     [userTabBar addSubview:whiteBlock];
     // 用户选项
     btn_comment = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -821,9 +832,12 @@
     switch (sender.tag) {
         case 1:
         {
+             whiteBlock.hidden  = NO;
             //[_mTableView setHidden:NO];
             [UIView animateWithDuration:0.2 animations:^{
                 whiteBlock.frame = CGRectMake(10, 9, 100, 30);
+            } completion:^(BOOL finished) {
+                whiteBlock.hidden = YES;
             }];
             [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_momentselected"] forState:UIControlStateNormal];
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activity"] forState:UIControlStateNormal];
@@ -838,17 +852,22 @@
             }else
             {
                 _mTableView.frame = CGRectMake(0, _mTableView.frame.origin.y, kScreen_Width, kScreen_Height);
+              
                 [_mapView removeFromSuperview];
                 [scr removeFromSuperview];
                 [self.view addSubview:_mTableView];
+              
             }
         }
             [controlView removeFromSuperview];
             break;
         case 2:
         {
+            whiteBlock.hidden  = NO;
             [UIView animateWithDuration:0.2 animations:^{
                 whiteBlock.frame = CGRectMake(110, 9, 100, 30);
+            } completion:^(BOOL finished) {
+                whiteBlock.hidden  = YES;
             }];
             [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_moment"] forState:UIControlStateNormal];
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activityselected"] forState:UIControlStateNormal];
@@ -868,8 +887,11 @@
             break;
         case 3:
         {
+             whiteBlock.hidden  = NO;
             [UIView animateWithDuration:0.2 animations:^{
                 whiteBlock.frame = CGRectMake(210, 9, 100, 30);
+            } completion:^(BOOL finished) {
+                whiteBlock.hidden = YES;
             }];
             [btn_comment setBackgroundImage:[UIImage imageNamed:@"friendlist_moment"] forState:UIControlStateNormal];
             [btn_activity setBackgroundImage:[UIImage imageNamed:@"friendlist_activity"] forState:UIControlStateNormal];
@@ -881,6 +903,11 @@
                [scr removeFromSuperview];
                 [_mTableView removeFromSuperview];
                 [self.view addSubview:_mapView];
+                UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+                btn.frame = CGRectMake(0, _mTableView.frame.origin.y, 50, 50);
+                [btn setTitle:@"send" forState:UIControlStateNormal];
+                [btn addTarget:self action:@selector(sendCV:) forControlEvents:UIControlEventTouchUpInside];
+                [self.view addSubview:btn];
             }else
             {
                 _mapView.frame = CGRectMake(10, _mTableView.frame.origin.y, 300, kGetViewHeight(_mTableView));
@@ -951,7 +978,7 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
         cell = [[FriendInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellName];
     }
     
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    //cell.selectionStyle = UITableViewCellSelectionStyleGray;
     cell.selectionStyle =UITableViewCellSelectionStyleNone;
     return cell;
 }
@@ -986,6 +1013,60 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
     UIGraphicsEndImageContext();
     
     return roundedImage;
+}
+
+- (void)createAShape2
+{
+    int radius = 50;
+    circle = [CAShapeLayer layer];
+    // Make a circular shape
+    circle.path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 2.0*radius, 2.0*radius)
+                                             cornerRadius:radius].CGPath;
+    // Center the shape in self.view
+    circle.position = CGPointMake(CGRectGetMidX(self.view.frame)-radius,
+                                  194);
+    
+    // Configure the apperence of the circle
+    circle.fillColor = [UIColor clearColor].CGColor;
+    circle.strokeColor = [UIColor colorWithWhite:0.9 alpha:0.5].CGColor;
+    circle.lineWidth =100;
+    
+    // Add to parent layer
+    [self.view.layer addSublayer:circle];
+    
+    // Configure animation
+    CABasicAnimation *drawAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    drawAnimation.duration            = 0.5; // "animate over 10 seconds or so.."
+    drawAnimation.repeatCount         = 1.0;  // Animate only once..
+    drawAnimation.removedOnCompletion = YES;   // Remain stroked after the animation..
+    
+    // Animate from no part of the stroke being drawn to the entire stroke being drawn
+    drawAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
+    drawAnimation.toValue   = [NSNumber numberWithFloat:1.0f];
+    
+    // Experiment with timing to get the appearence to look the way you want
+    drawAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+    
+    // Add the animation to the circle
+    [circle addAnimation:drawAnimation forKey:@"drawCircleAnimation"];
+    [self performSelector:@selector(removeCircleLayer) withObject:nil afterDelay:0.5];
+}
+
+- (void)removeCircleLayer
+{
+    [circle removeFromSuperlayer];
+    if (controlView) {
+        [self.view bringSubviewToFront:controlView];
+        //[self createAShape2];
+        [self.view addSubview:controlView];
+        controlView.frame = CGRectMake(47, 130, 226, 226);
+        controlView.layer.cornerRadius = 113;
+        //            [UIView animateWithDuration:0.5 animations:^{
+        //                controlView.frame = CGRectMake(47, 130, 226, 226);
+        //                controlView.layer.cornerRadius = 113;
+        //            }];
+    }
+
 }
 
 #pragma mark - createControlPanel
@@ -1179,7 +1260,7 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
     PinAnnotation *pinAnno = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude andLongitude:newLocCoordinate.longitude];
     
     [_mapView addAnnotation:pinAnno];
-    PinAnnotation *pinAnno1 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.1 andLongitude:newLocCoordinate.longitude];
+    PinAnnotation *pinAnno1 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude andLongitude:newLocCoordinate.longitude-0.01];
     [_mapView addAnnotation:pinAnno1];
     PinAnnotation *pinAnno2 = [[PinAnnotation alloc]initWithLatitude: newLocCoordinate.latitude-0.2 andLongitude:newLocCoordinate.longitude];
     [_mapView addAnnotation:pinAnno2];
@@ -1192,6 +1273,18 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
    
     
 }
+
+- (void)sendCV:(id)sender
+{
+    _mapView.scrollEnabled = NO;
+    CGPoint point1 = [_mapView convertCoordinate:newLocCoordinate toPointToView:self.view];
+    NSLog(@"%f,%f",point1.x,point1.y);
+    CGPoint point2 = [_mapView convertCoordinate:CLLocationCoordinate2DMake(newLocCoordinate.latitude, newLocCoordinate.longitude-0.01) toPointToView:self.view];
+    float x = [self createAngle:CGPointMake(point2.x, point2.y) withPoint2:CGPointMake(point1.x, point1.y)];
+    finalAngle = x;
+    [self huayuan2:_pointcenter withAngle:finalAngle];
+}
+
 -(void)setMapRegin:(CLLocationCoordinate2D)coordinate
 {
     newLocCoordinate = coordinate;
@@ -1359,11 +1452,16 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
     NSLog(@"de selecte");
     
 }
+
+
+
 - (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
 {
     //层次次序
     PinAnnotationView *pV = (PinAnnotationView *)[mapView viewForAnnotation:_pinAnnotation];
     DetailsAnnotationView *dV = (DetailsAnnotationView *)[mapView viewForAnnotation:_detailsAnnotation];
+    CAKeyframeAnimation *keyframe = [self createBounceKey:dV.frame.origin.y];
+    [dV.layer addAnimation:keyframe forKey:@"bounce"];
     [dV.superview bringSubviewToFront:dV];
     [pV.superview bringSubviewToFront:pV];
 }
@@ -1442,29 +1540,115 @@ scr.frame = CGRectMake(10, 40+100, kScreen_Width, kScreen_Height);
 }
 
 
-#pragma mark -Button Action
+#pragma mark -NAV Button Action
 
 - (void)navBtnClick:(UIButton *)sender
 {
     if (sender.tag==2) {
-        if (controlView) {
-            [self.view bringSubviewToFront:controlView];
-            [self.view addSubview:controlView];
-            [UIView animateWithDuration:0.5 animations:^{
-                controlView.frame = CGRectMake(47, 130, 226, 226);
-                controlView.layer.cornerRadius = 113;
-            }];
-        }else
-        {
-            [self createControlPanel];
-            [UIView animateWithDuration:0.5 animations:^{
-                controlView.frame = CGRectMake(47, 130, 226, 226);
-                controlView.layer.cornerRadius = 113;
-            }];
-        }
-        
+        [self createAShape2];
     }
     
+//        if (controlView) {
+//            [self.view bringSubviewToFront:controlView];
+//            [self createAShape2];
+//            [self.view addSubview:controlView];
+//            controlView.frame = CGRectMake(47, 130, 226, 226);
+//            controlView.layer.cornerRadius = 113;
+////            [UIView animateWithDuration:0.5 animations:^{
+////                controlView.frame = CGRectMake(47, 130, 226, 226);
+////                controlView.layer.cornerRadius = 113;
+////            }];
+//        }else
+//        {
+//            [self createAShape2];
+//            [self createControlPanel];
+//            controlView.frame = CGRectMake(47, 130, 226, 226);
+//            controlView.layer.cornerRadius = 113;
+////            [UIView animateWithDuration:0.5 animations:^{
+////                controlView.frame = CGRectMake(47, 130, 226, 226);
+////                controlView.layer.cornerRadius = 113;
+////            }];
+//        }
+//        
+//    }
+    
+}
+
+- (CAKeyframeAnimation *)createBounceKey:(CGFloat)x
+{
+    CGFloat startyPosition = x;
+    CAKeyframeAnimation * keyframeAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position.y"];
+    [keyframeAnimation setValues:[NSArray arrayWithObjects:[NSNumber numberWithFloat:startyPosition], [NSNumber numberWithFloat:startyPosition+20], [NSNumber numberWithFloat:startyPosition], [NSNumber numberWithFloat:startyPosition+10] ,[NSNumber numberWithFloat:startyPosition],nil]];
+    [keyframeAnimation setKeyTimes:[NSArray arrayWithObjects:[NSNumber numberWithFloat:0.0], [NSNumber numberWithFloat:.7], [NSNumber numberWithFloat:1.4],[NSNumber numberWithFloat:1.8], nil]];
+    [keyframeAnimation setDuration:0.8];
+    return keyframeAnimation;
+}
+
+-(void)huayuan2:(CGPoint)centerPoint withAngle:(float)x
+{
+    //UIBezierPath是是CGPathRef数据类型的封装 path如果是基于矢量形状的，都用直线和曲线段去创建。我们使用直线段去创建矩形和多边形，使用曲线段去创建弧（arc），圆或者其他复杂的曲线形状。每一段都包括一个或者多个点，绘图命令定义如何去诠释这些点。每一个直线段或者曲线段的结束的地方是下一个的开始的地方。每一个连接的直线或者曲线段的集合成为subpath。一个UIBezierPath对象定义一个完整的路径包括一个或者多个subpaths。
+    UIBezierPath*path=[UIBezierPath bezierPath];
+    
+    
+    
+    //CGRect rect=[UIScreen mainScreen].applicationFrame;
+    [path addArcWithCenter:CGPointMake(centerPoint.x,centerPoint.y) radius:finalHypotenuse startAngle:M_PI -x endAngle:0-x clockwise:YES];
+    finalpath = path;
+    arclayer=[CAShapeLayer layer];
+    
+    arclayer.path=path.CGPath;
+    arclayer.fillColor=[UIColor clearColor].CGColor;
+    arclayer.strokeColor=[UIColor blackColor].CGColor;
+    
+    arclayer.lineWidth=2;
+    arclayer.frame=self.mapView.bounds;
+    
+    [self.view.layer addSublayer:arclayer];
+    //[self drawLineAnimation:arclayer];
+    CABasicAnimation *bas=[CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    bas.duration=2;
+    bas.delegate=self;
+    bas.fromValue=[NSNumber numberWithInteger:0];
+    bas.toValue=[NSNumber numberWithInteger:1];
+    [arclayer addAnimation:bas forKey:@"key"];
+    [self performSelector:@selector(moveImageView:) withObject:nil afterDelay:2];
+}
+
+- (float)createAngle:(CGPoint)point1 withPoint2:(CGPoint)point2
+{
+    //float angle = 0.0;
+    CGPoint centerpoint = CGPointMake((point1.x+point2.x)/2,(point1.y+point2.y)/2 );
+    
+    _pointcenter = centerpoint;
+    float angelx = fabsf(point2.x-centerpoint.x);
+    float angely = fabsf(point2.y-centerpoint.y);
+    float hypotenuse = angelx*angelx+angely*angely;
+    finalHypotenuse= sqrtf(hypotenuse);
+    NSLog(@"anglex = %f,angely = %f",angelx,angely);
+    float x = angely/finalHypotenuse;
+    float finalangle = asinf(x);
+    return finalangle;
+}
+
+- (void)moveImageView:(id)sender
+{
+    imageview = [[UIImageView alloc] initWithFrame:CGRectMake(50, 100, 18, 15)];
+    imageview.image = [UIImage imageNamed:@"cv"];
+    [self.view addSubview:imageview];
+    CAKeyframeAnimation *keyframe = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+    keyframe.path = finalpath.CGPath;
+    keyframe.removedOnCompletion = NO;
+    keyframe.duration = 2;
+    [imageview.layer addAnimation:keyframe forKey:@"move"];
+    [self performSelector:@selector(deleteView) withObject:nil afterDelay:2];
+    
+}
+
+- (void)deleteView
+{
+    [arclayer removeFromSuperlayer];
+    [imageview removeFromSuperview];
+    self.mapView.scrollEnabled = YES;
 }
 
                                                                                             

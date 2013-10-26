@@ -96,10 +96,20 @@
     
     // Setup Notifications
     [self registerForNotifications];
+    // 导航条左按钮
+    UIButton *btn_left = [UIButton buttonWithType:UIButtonTypeCustom];
+    btn_left.frame = CGRectMake(0, 0, 56, 18);
+    // [btn_left setBackgroundImage:[UIImage imageNamed:@"friendlist_nav_leftbar"] forState:UIControlStateNormal];
     
+    UIImage * image = [UIImage imageNamed:@"textedit_leftnavbar"];
+    [btn_left setBackgroundImage:image forState:UIControlStateNormal];
+    //btn_left.tag=1;
+    [btn_left addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc] initWithCustomView:btn_left];
+
     // Navigation Bar Items
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
-	self.navigationItem.leftBarButtonItem = cancelButton;
+	self.navigationItem.leftBarButtonItem = leftBar;
 }
 
 - (void)viewDidUnload

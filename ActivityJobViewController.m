@@ -15,6 +15,7 @@
 #define kScrollAlreadyUp 50
 #define kScrollAlreadyDown 130
 #import "ActivityJobCell.h"
+#import "ActivityjobDetailViewController.h"
 @interface ActivityJobViewController ()
 
 @end
@@ -104,7 +105,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    
+    ActivityjobDetailViewController *ac = [[ActivityjobDetailViewController alloc]init];
+    [self.navigationController pushViewController:ac animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
